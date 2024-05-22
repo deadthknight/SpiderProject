@@ -3,6 +3,8 @@
 import re
 
 
+# Beatuiful Soup
+# https://beautifulsoup.readthedocs.io/zh-cn/v4.4.0/
 def readheaders(file):
     header_dict = {}
     f = open(file, 'r')
