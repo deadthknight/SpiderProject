@@ -36,7 +36,7 @@ def get_all_final():
             type =list[type_name]
             limit = input('输入查询排名:')
             movies = get_top_movies(type, limit)
-            final= get_all_final_movies(movies)
+            final = get_all_final_movies(movies)
             break
         elif type_name == 'exit':
             print()
