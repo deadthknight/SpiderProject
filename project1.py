@@ -23,3 +23,4 @@ if __name__ == "__main__":
     else:
         print('not equal')
 
+# https://www.kfc.com.cn/kfccda/storelist/index.aspx
