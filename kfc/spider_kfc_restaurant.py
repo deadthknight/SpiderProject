@@ -17,18 +17,18 @@ def get_kfc_infor():
              'pageSize': num}  #查询店面的数量
 
     url = 'https://www.kfc.com.cn/kfccda/ashx/GetStoreList.ashx?op=keyword'
-    url1 = 'https://www.kfc.com.cn/@df'
+
 
     try:
         response = requests.post(url=url, headers=headers, params=param)
 
-        print(response.status_code)
+        # print(response.status_code)
 
         response.raise_for_status() # 检查请求是否成功 不成功抛异常
 
         response = response.json()
 
-        print(response)
+        # print(response)
 
         # response结果
         # {'Table': [{'rowcount': 272}], 'Table1': [
@@ -37,6 +37,8 @@ def get_kfc_infor():
 
         num_total = response['Table']
         kfc_infor = response['Table1']
+
+        # print(kfc_infor)
 
         kfc_num = [x['rowcount'] for x in num_total][0]
 
