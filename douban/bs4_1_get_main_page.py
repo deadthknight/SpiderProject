@@ -9,6 +9,8 @@ url = 'https://movie.douban.com/chart'
 
 headers = readheaders('./header.txt')
 
+print(headers)
+
 response =requests.get(url, headers=headers)
 
 main_page = BeautifulSoup(response.text,'lxml')
