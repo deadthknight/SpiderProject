@@ -39,4 +39,5 @@ if __name__ == "__main__":
     # 方法二 select 方法返回的是一个 ResultSet 对象，一个元素列表
     # chapter = soup_content.select('.chapter_content')
     # for x in chapter:
-    #     print(x.text)
+    #
+    from lxml import etree
