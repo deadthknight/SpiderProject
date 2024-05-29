@@ -26,7 +26,8 @@ for info in soup.select('.book-mulu li >a'):
     response_content.encoding = chardet.detect(response_content.content)['encoding']
     soup_content = BeautifulSoup(response_content.text, 'lxml')
     chapter = soup_content.find('div', class_='chapter_content').text
-
+    print(chapter)
+    break
     # 将标题和内容写入文件
     # fp.write(title_chapter + ':\n' + chapter + '\n\n')
 

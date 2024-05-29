@@ -29,4 +29,4 @@ def get_all_final_movies(list):
 
 
 if __name__ == "__main__":
-    print(get_all_final_movies(get_top_movies(25, 5)))
+    print(get_all_final_movies(get_top_movies(11, 1)))
