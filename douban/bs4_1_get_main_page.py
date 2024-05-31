@@ -9,7 +9,7 @@ url = 'https://movie.douban.com/chart'
 
 headers = readheaders('./header.txt')
 
-print(headers)
+# print(headers)
 
 response =requests.get(url, headers=headers)
 
