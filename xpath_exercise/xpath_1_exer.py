@@ -12,7 +12,7 @@ from pprint import pprint
 
 headers = readheaders('../http_header.txt')
 
-
+# print(headers)
 # text_all = []
 # prices = []
 # for num in range(1,3):
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     from multiprocessing.dummy import Pool
 
     pool = Pool(10)
-    x = pool.map(get_infor_house,page_num(10))
+    x = pool.map(get_infor_house,page_num(2))
     # print(get_all_together())
     # print(len(x))
     sor=[]
@@ -97,4 +97,4 @@ if __name__ == "__main__":
         for j in i:
             sor.append(j)
     sor = sorted(sor,key=lambda x:x[1],reverse=True)
-    print(sor)
+    pprint(sor)
