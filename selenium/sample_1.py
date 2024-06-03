@@ -25,9 +25,10 @@ if __name__ == "__main__":
     # 调用WebDriver 对象的get方法 可以让浏览器打开指定网址
     wd.get('https://cdn2.byhy.net/files/selenium/sample1.html')
 
-    elements = wd.find_elements(By.CLASS_NAME, 'animal')
-    for element in elements:
-        print (element.text)
+    # elements = wd.find_elements(By.CLASS_NAME, 'animal')
+    # for element in elements:
+    #     print (element.text)
+    elements = wd.find_elements(By.TAG_NAME,'div')
 
     # 程序运行完会自动关闭浏览器，就是很多人说的闪退
     # 这里加入等待用户输入，防止闪退
