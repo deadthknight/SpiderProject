@@ -24,7 +24,12 @@ element.send_keys('日本环球影城')
 element = wd.find_element(By.ID, 'su')
 element.click()
 
-element_href = wd.find_element(By.ID,'content_left').find_element(By.ID,'1').find_element(By.TAG_NAME,'a').get_attribute('href')
+element_href = wd.find_element(By.ID, 'content_left').find_element(By.ID, '1').find_element(By.TAG_NAME,
+                                                                                            'a').get_attribute('href')
 wd.get(element_href)
 
 input('等待回车键结束程序')
+
+# 有时候，元素的文本内容没有展示在界面上，或者没有完全完全展示在界面上。 这时，用WebElement对象的text属性，获取文本内容，就会有问题。
+# 出现这种情况，可以尝试使用 element.get_attribute('innerText') ，或者 element.get_attribute('textContent')
+# 使用 innerText 和 textContent 的区别是，前者只显示元素可见文本内容，后者显示所有内容（包括display属性为none的部分）
