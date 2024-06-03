@@ -10,6 +10,7 @@ from time_decorater import run_time
 
 headers = readheaders('./header_code.txt')
 
+
 async def get_url_list():
     url = 'https://chowluking.com/codes'
     async with aiohttp.ClientSession() as session:
@@ -26,6 +27,7 @@ async def get_url_list():
         download_url = 'https://chowluking.com/code/' + filename
         download_url_list.append(download_url)
     return download_url_list
+
 
 async def download_file(session, download_url, retries=3, timeout=10):
     parsed_url = urlparse(download_url)
@@ -73,11 +75,12 @@ async def main():
         tasks = [download_file(session, url) for url in download_url_list]
         await asyncio.gather(*tasks)
 
+
 if __name__ == "__main__":
     import time
+
     t1 = time.time()
     asyncio.run(main())
     print("全部下载完毕！！！")
     t2 = time.time()
     print('本次操作时间: %.2f' % (t2 - t1))  # 计算并且打印扫描时间
-

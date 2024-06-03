@@ -24,7 +24,6 @@ def get_all_final_movies(list):
         # print(all_final)
         all_movies.append(all_final)
 
-
     return all_movies
 
 

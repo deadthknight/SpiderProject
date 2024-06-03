@@ -7,9 +7,8 @@ from douban.bs4_4_get_comment import get_all_final_movies
 from pprint import pprint
 
 
-
-
 def get_all_final():
+
     list = name_id()
 
     total_key_length = sum(len(key) + 2 for key in list.keys())
@@ -28,12 +27,11 @@ def get_all_final():
     print('\r')
     print()
 
-
     while True:
 
         type_name = input('输入电影类型:')
         if type_name in key_list:
-            type =list[type_name]
+            type = list[type_name]
             limit = input('输入查询排名:')
             movies = get_top_movies(type, limit)
             final = get_all_final_movies(movies)
@@ -45,5 +43,7 @@ def get_all_final():
         else:
             print('输入错误，请重新输入')
     return final
+
+
 if __name__ == "__main__":
     pprint(get_all_final())
