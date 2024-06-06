@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="python@92ade29e-3af1-4ede-a079-dfe9d45108f0" />
+        <remote-mappings server-id="python@sftp://root@10.10.1.200:22/bin/python3.11">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$" remote-root="/SpiderProject" />
+            </list>
+          </settings>
+        </remote-mappings>
+      </list>
+    </list>
+  </component>
+</project>
