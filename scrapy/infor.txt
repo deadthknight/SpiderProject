@@ -1,0 +1,10 @@
+
+pip install scrapy
+    创建工程：scrapy startproject XXXX
+    cd xxxx
+    在spiders子目录中创建爬虫文件
+     - scrapy genspider spiderName  www.xxx.com
+    执行工程：
+     - scrapy crawl spiderName
+     - ROBOTSTXT_OBEY = False 关闭robots协议
+     - LOG_LEVEL = 'ERROR' 只显示错误日志
