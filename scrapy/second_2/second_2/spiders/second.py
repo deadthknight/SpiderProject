@@ -1,6 +1,7 @@
 import scrapy
+from second_2.items import Second2Item
 
-from second_2 import Second2Item
+
 class SecondSpider(scrapy.Spider):
     # 爬虫文件名称，唯一标识
     name = "second"
@@ -23,4 +24,5 @@ class SecondSpider(scrapy.Spider):
         title1 = response.xpath('//*[@id="app"]/nav/div/a/@href').extract_first()
         print(f"Page title: {title1}")
         # Page title: https: // apply.daystaracademy.cn
+        item = Second2Item()
 
