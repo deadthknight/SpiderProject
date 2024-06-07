@@ -44,5 +44,15 @@ wd.find_elements(By.CLASS_NAME, 'animal')
 # 使用 find_elements 选择的是符合条件的 所有 元素， 如果没有符合条件的元素， 返回空列表
 #
 # 使用 find_element 选择的是符合条件的 第一个 元素， 如果没有符合条件的元素， 抛出 NoSuchElementException 异常
+
+# 如果我们要 同时选择所有class 为 plant 和 class 为 animal 的元素。怎么办？
+#
+# 这种情况，css选择器可以 使用 逗号 ，称之为 组选择 ，像这样
+#
+#
+# .plant , .animal
+#
+# 再比如，我们要同时选择所有tag名为div的元素 和 id为BYHY的元素，就可以像这样写
+# div,#BYHY
 if __name__ == "__main__":
     pass
