@@ -1,0 +1,8 @@
+运算符
+当出现and，or，not，（）混合时候
+（）-> not -> and -> or
+
+ASCII  8位 1字节
+GBK    16位 2字节 国标码
+Unicode 32位 4字节
+UTF-8  每个字符至少占8位，不定长 英文8bit，欧洲16bit，中文24bit

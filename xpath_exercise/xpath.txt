@@ -1,0 +1,30 @@
+选取p类型倒数第1个子元素
+
+//p[last()]
+选取p类型倒数第2个子元素
+
+//p[last()-1]
+选择父元素为div中p类型倒数第3个子元素
+
+//div/p[last()-2]
+范围选择
+xpath还可以选择子元素的次序范围。
+
+比如，选取option类型第1到2个子元素
+
+//option[position()<=2]
+或者
+//option[position()<3]
+选择class属性为multi_choice的前3个子元素
+
+//*[@class='multi_choice']/*[position()<=3]
+选择class属性为multi_choice的后3个子元素
+
+//*[@class='multi_choice']/*[position()>=last()-2]
+为什么不是 last()-3 呢？ 因为
+
+last() 本身代表最后一个元素
+
+last()-1 本身代表倒数第2个元素
+
+last()-2 本身代表倒数第3个元素

@@ -5,24 +5,33 @@ from lxml import etree
 from readheader import readheaders
 from bs4 import BeautifulSoup
 from pprint import pprint
-
+import random
+import chardet
 headers = readheaders('./pear_header.txt')
-url = 'https://www.pearvideo.com/videoStatus.jsp?contId=1794456'
+url = 'https://www.pearvideo.com/popular?'
 
-response = requests.get(url=url, headers=headers).json()
+# param = {'reqType': '',
+#          'categoryId': '',
+#          'start': 0,
+#          'sort': 0,
+#          }
 
-# tree = etree.HTML(response.json())
+response = requests.get(url=url, headers=headers)
+response.encoding = chardet.detect(response.content)['encoding']
 
-# print(response)
-video_url = response['videoInfo']['videos']['srcUrl']
+tree = etree.HTML(response.text)
+li_list = tree.xpath('//*[@id="popularList"]/li')
+print(li_list)
+# print(tree)
 
-print(video_url)
+
+
 
 # video_date = requests.get(url=video_url, headers=headers).content
 #
 # with open('./video.mp4', 'wb') as fp:
 #     fp.write(video_date)
-print('a','b',)
+
 
 # print(tree)
 
