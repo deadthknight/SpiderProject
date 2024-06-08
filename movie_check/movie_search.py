@@ -37,33 +37,33 @@ def search(key):
         except Exception as e:
             continue  #
 
-        while True:
-            try:
-                # WebDriver在当前页面中查找一个链接文本为“下一页”的链接元素。
-                next_page_element = wd.find_element(By.LINK_TEXT, '下一页')
-                # next_page_element.is_enabled()是一个Selenium WebDriver的方法，用于检查页面上的元素是否可点击（即是否处于可用状态）
-                if next_page_element and next_page_element.is_enabled():
-                    next_page_element.click()
-                    # time.sleep(3)  # 等待页面加载
-                    # 切换到新打开的页面
-                    wd.switch_to.window(wd.window_handles[-1])
-                    elements = wd.find_elements(By.XPATH, '//ul/table[@border="0" and @width="100%"]')
-                    for element in elements:
-                        # 在每一个 tbody 元素内查找 a 标签
-                        a_tag = element.find_element(By.TAG_NAME, 'a')
-                        href = a_tag.get_attribute('href')
-                        title = a_tag.text
-                        final = {'Title': title,
-                                 'Link': href
-                                 }
-                        finally_list.append(final)
-                    time.sleep(3)
+    while True:
+        try:
+            # WebDriver在当前页面中查找一个链接文本为“下一页”的链接元素。
+            next_page_element = wd.find_element(By.LINK_TEXT, '下一页')
+            # next_page_element.is_enabled()是一个Selenium WebDriver的方法，用于检查页面上的元素是否可点击（即是否处于可用状态）
+            if next_page_element and next_page_element.is_enabled():
+                next_page_element.click()
+                # time.sleep(3)  # 等待页面加载
+                # 切换到新打开的页面
+                wd.switch_to.window(wd.window_handles[-1])
+                elements = wd.find_elements(By.XPATH, '//ul/table[@border="0" and @width="100%"]')
+                for element in elements:
+                    # 在每一个 tbody 元素内查找 a 标签
+                    a_tag = element.find_element(By.TAG_NAME, 'a')
+                    href = a_tag.get_attribute('href')
+                    title = a_tag.text
+                    final = {'Title': title,
+                             'Link': href
+                             }
+                    finally_list.append(final)
+                time.sleep(3)
 
 
-                else:
-                    break  # 如果没有找到下一页按钮或者下一页按钮不可点击，退出循环
-            except:
-                break  # 如果找不到下一页按钮，退出循环
+            else:
+                break  # 如果没有找到下一页按钮或者下一页按钮不可点击，退出循环
+        except:
+            break  # 如果找不到下一页按钮，退出循环
     # pages = wd.find_elements(By.XPATH,'//ul/table[@cellpadding=0]')
     #
     # page_urls = []
@@ -88,7 +88,7 @@ def search(key):
     #                      }
     #             finally_list.append(final)
     #         time.sleep(3)
-
+    wd.close()
     return finally_list
 
 
