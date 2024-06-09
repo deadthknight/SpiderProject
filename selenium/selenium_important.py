@@ -47,7 +47,7 @@ driver = create_driver()
 driver.get("https://www.baidu.com")
 # random_wait()
 
-# 使用显式等待替代静态等待
+# 使用显式等待替代静态等待 为特定条件设置最大等待时间（如 10 秒），默认每 0.5 秒检查一次，且可以自定义检查频率。
 wait = WebDriverWait(driver, 10)
 search_box = wait.until(EC.presence_of_element_located((By.ID, 'kw')))
 search_box.send_keys('日本环球影城')
