@@ -12,6 +12,7 @@ import time
 
 headers = readheaders('./header_code.txt')
 url = 'https://dygod.org/index.htm'
+# url = 'https://dytt.dytt8.net/index.htm'
 
 response = requests.get(url=url, headers=headers)
 response.encoding = chardet.detect(response.content)['encoding']
