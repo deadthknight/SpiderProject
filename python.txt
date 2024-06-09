@@ -6,3 +6,13 @@ ASCII  8位 1字节
 GBK    16位 2字节 国标码
 Unicode 32位 4字节
 UTF-8  每个字符至少占8位，不定长 英文8bit，欧洲16bit，中文24bit
+
+str
+    s = '123'
+    s1 = s.replace('2','and')
+    print(s1)                 s1 = 1and3
+    s2 = s.split('2')
+    print(s2)                 s2 = ['1', '3']
+    s3 = 'or'.join(s2)
+    print(s3)                 s3 = 1or3
+
