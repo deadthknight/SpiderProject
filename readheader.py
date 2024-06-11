@@ -16,6 +16,15 @@ def readheaders(file):
     f.close()
     return header_dict
 
+def readheader_demo(file):
+    header_dict = {}
+    with open(file, 'r') as f:
+        headers_text = f.read()
+        headers = re.split("\n", headers_text)
+        for header in headers:
+            result = re.split(":", header, maxsplit=1)
+            header_dict[result[0]] = result[1].strip()
+    return header_dict
 
 if __name__ == '__main__':
     # print(readheaders('http_header.txt'))

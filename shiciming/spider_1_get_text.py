@@ -13,6 +13,7 @@ url = 'https://www.shicimingju.com/book/sanguoyanyi.html'
 response = requests.get(url=url, headers=headers)
 # 自动检测：chardet 可以自动检测字节流的编码，确保我们能够正确解码网页内容
 response.encoding = chardet.detect(response.content)['encoding']
+# response.encoding = response.apparent_encoding  # 自动检测编码
 
 soup = BeautifulSoup(response.text, 'lxml')
 
