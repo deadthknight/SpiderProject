@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 # -*- coding=utf-8 -*-
 # 本脚由亁颐堂现任明教教主编写，用于乾颐堂NetDevOps课程！
 

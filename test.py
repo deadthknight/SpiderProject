@@ -1,5 +1,7 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
+import re
+
 lst = ['很多免费的', '质量一般的', 'verygood']
 # lst.insert(1,'量很大')
 # print(lst)
@@ -73,3 +75,13 @@ if d is None:
 else:
     print('d is not None')
 # d is not None 条件 if d is None 检查变量 d 是否为 None。然而，一个空列表 ([]) 不是 None，它是一个空容器。因此，在你的代码中，d 不是 None。
+
+str2 = '我的家'
+str1 = str2.replace('我','你')
+print(str1)
+
+# https://tool.chinaz.com/regex 正则表达式 测试
+lst = [1,2,3]
+m = map(lambda x:x*2,lst)
+print(list(m))
+
