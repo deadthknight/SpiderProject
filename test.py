@@ -85,3 +85,8 @@ lst = [1,2,3]
 m = map(lambda x:x*2,lst)
 print(list(m))
 
+for i in range(1,10):
+    for j in range(1,i+1):
+        print('{}*{}={}'.format(j,i,i*j),end='\t')
+    print()
+
