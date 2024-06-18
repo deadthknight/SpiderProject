@@ -17,7 +17,7 @@ url = 'https://dygod.org/index.htm'
 response = requests.get(url=url, headers=headers)
 response.encoding = chardet.detect(response.content)['encoding']
 tree = etree.HTML(response.text)
-tr_list = tree.xpath('(//div[@class="bd3rl"])[1]/div[2]//div[2]//tr[position()>1 and position()<=6]')
+tr_list = tree.xpath('(//div[@class="bd3rl"])[1]/div[2]//div[2]//tr[position()>1 and position()<=8]')
 # print(len(tr_list))
 name_list = []
 download_list = []
