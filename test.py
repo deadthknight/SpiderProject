@@ -60,7 +60,7 @@ b = [10, 20, 30, 40, 50, 60, 70, 80]
 
 print(a == b)  # True ,判断两个内容的值是否一致
 print(a is b)  # False,判断两个内容的内存地址是否一致
-
+print(dict(zip(a, b))) # 转换为字典
 # 一般用is来判空
 c = []
 if c:
@@ -75,6 +75,9 @@ if d is None:
 else:
     print('d is not None')
 # d is not None 条件 if d is None 检查变量 d 是否为 None。然而，一个空列表 ([]) 不是 None，它是一个空容器。因此，在你的代码中，d 不是 None。
+a = 'ab'
+b = 'de'
+print(dict(zip(a, b)))
 
 str2 = '我的家'
 str1 = str2.replace('我','你')
