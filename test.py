@@ -89,19 +89,27 @@
 #     for j in range(1,i+1):
 #         print('{}*{}={}'.format(j,i,i*j),end='\t')
 #     print()
-#
-n = 0
-while True:
+movie = '''['电影名称': '2024年动作《九龙城寨之围城》HD国粤双语中字','链接地址': 'https://dygod.org/html/gndy/dyzz/20240621/65114.html',
+  '电影名称': '2024年奇幻喜剧《神秘友友》BD中英双字','链接地址': 'https://dygod.org/html/gndy/dyzz/20240621/65113.html',
+  '电影名称': '2024年动作《怒火战猴》BD中英双字','链接地址': 'https://dygod.org/html/gndy/dyzz/20240621/65112.html',
+  '电影名称': '2023年科幻惊悚《野兽》BD中字','链接地址': 'https://dygod.org/html/gndy/dyzz/20240620/65108.html',
+  '电影名称': '2024年剧情犯罪《三叉戟》HD国语中字','链接地址': 'https://dygod.org/html/gndy/dyzz/20240620/65107.html',
+]'''
 
-    try:
-        print('start')    finally:
-        print('finally
-        print(1/n)
-        n-=1
-        print('end')
+import re
+# pattern = re.compile(r"《(?P<name>.*?)》")
+# lst = pattern.finditer(movie)
+# for i in lst:
+#     print(i.group('name'))
 
-    except:
-        print('error')
-        continue
-')
-        break
+# pattern1 = re.compile(r"'链接地址': '(?P<url>.*?)',")
+# list1 = pattern1.finditer(movie)
+# for i in list1:
+#     print(i.group('url'))
+
+pattern2 = re.compile(r"'电影名称': '.*?《(?P<name>.*?)》.*?','链接地址': '(?P<url>.*?)',")
+
+list2 = pattern2.finditer(movie)
+for i in list2:
+    print(i.group('name'))
+    print(i.group('url'))
