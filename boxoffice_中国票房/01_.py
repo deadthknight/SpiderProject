@@ -1,5 +1,7 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
+import time
+
 import requests
 from lxml import etree
 import requests
@@ -15,14 +17,17 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
 }
 
-def get_page_source(url):
-    try:
-        response = requests.get(url=url,  headers=headers, verify=False)
-        # 自动检测：chardet 可以自动检测字节流的编码，确保我们能够正确解码网页内容
-        # response.encoding = chardet.detect(response.content)['encoding']
-        return response.text
-    except Exception as e:
-        print(f"获取失败：{e}")
+def get_page_source(url,delay=3):
+    while True:
+        try:
+            response = requests.get(url=url,  headers=headers, verify=False)
+            response.raise_for_status()
+            # 自动检测：chardet 可以自动检测字节流的编码，确保我们能够正确解码网页内容
+            # response.encoding = chardet.detect(response.content)['encoding']
+            return response.text
+        except requests.exceptions.RequestException as e:
+            print(f"获取失败：{e}，将在 {delay} 秒后重试...")
+            time.sleep(delay)
 
 
 def parse_data(pg_source):
