@@ -34,8 +34,12 @@ def parse_source_page(source_page):
             total.append(dic)
     return total
 
-def diff(data):
-    pass
+def diff(data_list):
+    # 使用集合去重
+    data_set = {tuple(data.items()) for data in data_list}
+    # 将元组转换回字典
+    unique_list = [dict(item) for item in data_set]
+    return unique_list
 
 def main():
     url = "https://m.lianjia.com/liverpool/api/ershoufang/getList?"
@@ -49,19 +53,18 @@ def main():
             break
         page += 1
         # print(page)
-    return get_all
+    final = diff(get_all)
+    return final
 
 
 
 if __name__ == '__main__':
-   total= main()
-   print(len(total))
-   total = sorted(total,key=lambda x:float(x["总价"].split('万')[0]))
-   # # total = set(total)
-   # # # total = list(total)
-   # # print(type(total))
-   # # # print(len(main()))
-   for i in total:
+    total = main()
+    print(len(total))
+    total = sorted(total,key=lambda x:float(x["总价"].split('万')[0]))
+    for i in total:
        print(i)
+
+
 
 
