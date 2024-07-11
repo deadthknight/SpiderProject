@@ -113,3 +113,4 @@ list2 = pattern2.finditer(movie)
 for i in list2:
     print(i.group('name'))
     print(i.group('url'))
+

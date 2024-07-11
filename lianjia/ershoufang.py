@@ -35,6 +35,7 @@ def parse_source_page(source_page):
     return total
 
 def diff(data):
+    pass
 
 def main():
     url = "https://m.lianjia.com/liverpool/api/ershoufang/getList?"
@@ -56,10 +57,10 @@ if __name__ == '__main__':
    total= main()
    print(len(total))
    total = sorted(total,key=lambda x:float(x["总价"].split('万')[0]))
-   # total = set(total)
-   # # total = list(total)
-   # print(type(total))
-   # # print(len(main()))
+   # # total = set(total)
+   # # # total = list(total)
+   # # print(type(total))
+   # # # print(len(main()))
    for i in total:
        print(i)
 
