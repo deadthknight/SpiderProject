@@ -26,10 +26,16 @@ def parse_source_page(source_page):
         desc = x.get("desc", "")
         totalPrice = x.get("totalPrice", "")
         avgPrice = x.get("unitPrice", "")
-        # if name in title or name in desc:
-        dic={"小区名称":name,"详细信息":desc,"总价":totalPrice, "单价":avgPrice}
-        total.append(dic)
+        if name in title or name in desc:
+            dic = {"小区名称": name,
+                   "详细信息": desc,
+                   "总价": totalPrice,
+                   "单价": avgPrice}
+            total.append(dic)
     return total
+
+def diff(data):
+
 def main():
     url = "https://m.lianjia.com/liverpool/api/ershoufang/getList?"
     page = 1
@@ -49,7 +55,7 @@ def main():
 if __name__ == '__main__':
    total= main()
    print(len(total))
-   total = sorted(total,key=lambda x:int(x["总价"].split('万')[0]))
+   total = sorted(total,key=lambda x:float(x["总价"].split('万')[0]))
    # total = set(total)
    # # total = list(total)
    # print(type(total))
