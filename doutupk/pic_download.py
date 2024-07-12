@@ -16,14 +16,19 @@ def get_source_pages(page):
     response = requests.get(url,headers=headers)
     return response.text
 
-def get_urls(page):
-    file = get_source_pages(page)
-    tree = etree.HTML(file)
-    pic_urls = tree.xpath('//*[@class="col-xs-6 col-sm-3"]/img/@data-original')
-    return pic_urls
+def get_urls(q):
+    for page in range (1,10):
+        file = get_source_pages(page)
+        tree = etree.HTML(file)
+        pic_urls = tree.xpath('//*[@class="col-xs-6 col-sm-3"]/img/@data-original')
+        for img_url in pic_urls:
+            # print(img_url)  # ? 7
+            # 把拿到的img_url 塞入队列
+            q.put(img_url)  # 固定的
+    q.put("滚蛋吧.没了")  # 结束的一个消息
 
 def img_process(q):  # 从队列中提取url. 进行下载
-    with ThreadPoolExecutor(10) as t:  # ?
+    with ThreadPoolExecutor(30) as t:  # ?
         while 1:  # 这边不确定有多少个. 那就一直拿
             img_url = q.get()  # 没有问题. 这里面, get是一个阻塞的逻辑
             if img_url == '滚蛋吧.没了':
@@ -69,3 +74,4 @@ if __name__ == "__main__":
 
     s2 = time.time()
     print(s2 - s1)
+    #4.8
