@@ -17,12 +17,12 @@ def get_source_pages(page):
     return response.text
 
 def get_urls(q):
-    for page in range (1,10):
+    for page in range (1,2):
         file = get_source_pages(page)
         tree = etree.HTML(file)
         pic_urls = tree.xpath('//*[@class="col-xs-6 col-sm-3"]/img/@data-original')
         for img_url in pic_urls:
-            # print(img_url)  # ? 7
+            print(img_url)  # ? 7
             # 把拿到的img_url 塞入队列
             q.put(img_url)  # 固定的
     q.put("滚蛋吧.没了")  # 结束的一个消息

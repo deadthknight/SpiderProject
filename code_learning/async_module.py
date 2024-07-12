@@ -19,10 +19,22 @@ async def download_file(url):
                     await f.write(data)
                     print(f"File {file_name} downloaded successfully.")
 async def main():
-    urls= ['www.baidu.com','www.sohu.com']
+    urls= ['http://img.doutupk.com/production/uploads/image/2024/06/17/20240617588532_JyYsgQ.jpeg',
+'http://img.doutupk.com/production/uploads/image/2024/06/17/20240617588532_wSVbLs.jpeg']
     # ...  获取 url 列表
     tasks = []
-    for url in urls:
-        tasks.append(asyncio.create_task(download_file(url)))
-    await asyncio.wait(tasks)
-    # await asyncio.gather(download_file(url))
+    # for url in urls:
+    #     tasks.append(asyncio.create_task(download_file(url)))
+    # await asyncio.wait(tasks)
+
+    await asyncio.gather(*(download_file(url) for url in urls))
+
+
+if __name__ == '__main__':
+
+    import time
+    t1 = time.time()
+    asyncio.run(main())
+    print("全部下载完毕！！！")
+    t2 = time.time()
+    print('本次操作时间: %.2f' % (t2 - t1))  # 计算并且打印扫描时间
