@@ -94,7 +94,6 @@ def search(key):
         return '没有找到相关电影'
 
 
-
 if __name__ == '__main__':
     key = input('请输入查询电影的名称：')
     print(search(key))

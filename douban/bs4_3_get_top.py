@@ -18,7 +18,7 @@ def get_top_movies(type,limit):
              'limit': limit}
 
     response = requests.get(url=url, params=param, headers=headers)
-
+    # print(response.url)
     get_top_list = response.json()
 
     get_top_list_final = []
