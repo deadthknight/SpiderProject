@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.11
 # -*- coding: utf-8 -*-
-import aiohttp
+import aiohttp  #request
 import asyncio
 from lxml import etree
 from readheader import readheaders

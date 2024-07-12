@@ -7,6 +7,15 @@ from lxml import etree
 import requests
 from pprint import pprint
 
+def wraggper(fn):
+    def inner(*args, **kwargs):
+        start_time = time.time()
+        ret = fn(*args, **kwargs)
+        end_time = time.time()
+        print('本次操作时间: %.2f' % (end_time - start_time))
+        return ret
+    return inner
+
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9',
@@ -32,7 +41,7 @@ def get_page_source(url,delay=3):
 
 def parse_data(pg_source):
     tree = etree.HTML(pg_source)
-    tr_list = tree.xpath('//*[@class="entry-content"]//tr')[1:-1]
+    tr_list = tree.xpath('//*[@class="entry-content"]//tr')[1:]
     total = []
     for tr in tr_list:
             name = tr.xpath('./td[3]//text()')
@@ -42,14 +51,17 @@ def parse_data(pg_source):
                     name = name.replace('#','') + '(上映又撤档)'
             else:
                 continue
-            price = tr.xpath('./td[last()]//text()')[0]
+            year = tr.xpath('./td[2]//text()')[0]
+            price = tr.xpath('./td[last()]//text()')[0].replace(',','.')
             if '（' in price:
                 price = price.split('（')[0] + "万元" + '（' + price.split('（')[1]
+            elif '–' in price or '暂无' in price or '未知' in price:
+                price = '0'
             else:
                 price = price + "万元"
-            dic = {"电影名": name, "票房": price}
+            dic = {"年代":year,"电影名": name, "票房": price}
             total.append(dic)
-    total = sorted(total,key=lambda x:float(x['票房'].split('万元')[0]))
+    # total = sorted(total,key=lambda x:float(x['票房'].split('万元')[0]))
     return total
 
 def savedata(data):
@@ -57,13 +69,37 @@ def savedata(data):
         for item in data:
             f.write(f"{item['电影名']},{item['票房']}\n")
 
-def main():
-    url = 'http://www.boxofficecn.com/boxoffice2024'
+
+def main(url):
+    # url = 'http://www.boxofficecn.com/boxoffice2024'
     page_source = get_page_source(url)
     data = parse_data(page_source)
     # savedata(data)
     return data
 
+@wraggper
+def all_data():
+    url_list = []
+    for i in range (1996 , 2024):
+        url = f'http://www.boxofficecn.com/boxoffice{i}'
+        url_list.append(url)
+
+    total = []
+    for url in url_list:
+        data = main(url)
+        total.extend(data)
+    total = sorted(total, key=lambda x: float(x['票房'].split('万元')[0]))
+    return total
+
 
 if __name__ == "__main__":
-    pprint(main())
+    pprint(all_data())
+    from multiprocessing.dummy import Pool
+    import time
+
+    pool = Pool(30)
+    t1 = time.time()
+    pool.map(download_file, get_url_list())
+    print("全部下载完毕！！！")
+    t2 = time.time()
+    print('本次操作时间: %.2f' % (t2 - t1))  # 计算并且打印扫描时间
