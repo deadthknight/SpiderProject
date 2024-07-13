@@ -46,7 +46,8 @@ async def download_one(url, file_path):
     # print('下载该文章')
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False)) as session:  #ssl 报错
         async with session.get(url=url, headers=readheaders('../http_header.txt')) as response:
-            page_source = await response.text(encoding='utf-8')
+            page_source = await response.text(encoding='utf-8') #拿源代码
+            # content = await response.content.read() #拿字节流 图片 视频
             tree = etree.HTML(page_source)
             content = tree.xpath('//div[@class="content"]/p[position() != last()]/text()')  # 不要最后一个P里面的text
             content = ''.join(content).replace('\n', '').replace('\r', '').strip()
