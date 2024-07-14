@@ -50,7 +50,7 @@ async def download_one(url, file_path):
             # content = await response.content.read() #拿字节流 图片 视频
             tree = etree.HTML(page_source)
             content = tree.xpath('//div[@class="content"]/p[position() != last()]/text()')  # 不要最后一个P里面的text
-            content = ''.join(content).replace('\n', '').replace('\r', '').strip()
+            content = ''.join(content).replace('\n', '').replace('\r', '').strip()  #去除里面的回车/换行/空格等
             async with aiofiles.open(file_path, mode='w', encoding='utf-8') as f:
                 await f.write(content)
     # print('下载完毕')
@@ -66,20 +66,22 @@ async def download_file(chapter_list):
 
         if not os.path.exists(f'./{volume_name}'):
             os.makedirs(f'./{volume_name}')
-        filepath = f'./{volume_name}/{str(i) + "_" + chapter_name}.txt'
+        filepath = f'./{volume_name}/{str(i) + "_" + chapter_name}.txt'#下载的txt按顺序排列 i
         t = asyncio.create_task(download_one(chapter_url, filepath))
         tasks.append(t)
         i += 1
     await asyncio.wait(tasks)
+    # await asyncio.gather(*tasks)  # 这么写也ok
 
 
 def main():
     url = 'https://www.mingchaonaxieshier.com/'
     source_page = get_source_page(url)
     chapter_list = get_chapter_urls(source_page)
-    # asyncio.run(download_file(chapter_list))  #如果报错 用下面命令
-    event_loop = asyncio.get_event_loop()
-    event_loop.run_until_complete(download_file(chapter_list))
+    asyncio.run(download_file(chapter_list))  #如果报错 用下面命令
+    # event_loop = asyncio.get_event_loop()
+    # asyncio.set_event_loop(event_loop)
+    # event_loop.run_until_complete(download_file(chapter_list))
     print('所有文章已下载完毕')
 
 
