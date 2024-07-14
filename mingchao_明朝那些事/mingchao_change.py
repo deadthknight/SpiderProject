@@ -44,8 +44,7 @@ def get_source_page(url):
     return response.text
 
 
-async def download_one(chapter):
-    i = 1
+async def download_one(chapter,i):
     volume_name = chapter['卷名']
     chapter_name = chapter['章名']
     chapter_url = chapter['url']
@@ -67,7 +66,8 @@ async def download_one(chapter):
 
 
 async def download_file(chapter_list):
-    await asyncio.gather(*(download_one(chapter) for chapter in chapter_list) ) # 这么写也ok
+    await asyncio.gather(*(download_one(chapter,i) for i, chapter in enumerate(chapter_list,1))) # 这么写也ok
+
 
 
 def main():
