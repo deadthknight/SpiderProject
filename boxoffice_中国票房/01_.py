@@ -44,23 +44,23 @@ def parse_data(pg_source):
     tr_list = tree.xpath('//*[@class="entry-content"]//tr')[1:]
     total = []
     for tr in tr_list:
-            name = tr.xpath('./td[3]//text()')
-            if name:
-                name = ''.join(name)
-                if '#' in name:
-                    name = name.replace('#','') + '(上映又撤档)'
-            else:
-                continue
-            year = tr.xpath('./td[2]//text()')[0]
-            price = tr.xpath('./td[last()]//text()')[0].replace(',','.')
-            if '（' in price:
-                price = price.split('（')[0] + "万元" + '（' + price.split('（')[1]
-            elif '–' in price or '暂无' in price or '未知' in price:
-                price = '0'
-            else:
-                price = price + "万元"
-            dic = {"年代":year,"电影名": name, "票房": price}
-            total.append(dic)
+        name = tr.xpath('./td[3]//text()')
+        if name:
+            name = ''.join(name)
+            if '#' in name:
+                name = name.replace('#','') + '(上映又撤档)'
+        else:
+            continue
+        year = tr.xpath('./td[2]//text()')[0]
+        price = tr.xpath('./td[last()]//text()')[0].replace(',','.')
+        if '（' in price:
+            price = price.split('（')[0] + "万元" + '（' + price.split('（')[1]
+        elif '–' in price or '暂无' in price or '未知' in price:
+            price = '0'
+        else:
+            price = price + "万元"
+        dic = {"年代":year,"电影名": name, "票房": price}
+        total.append(dic)
     # total = sorted(total,key=lambda x:float(x['票房'].split('万元')[0]))
     return total
 

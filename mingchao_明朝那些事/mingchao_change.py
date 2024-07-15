@@ -11,18 +11,6 @@ import aiofiles
 import os
 from readheader import readheaders
 
-import time
-
-
-def wraggper(fn):
-    def inner(*args, **kwargs):
-        start_time = time.time()
-        ret = fn(*args, **kwargs)
-        end_time = time.time()
-        print('本次操作时间: %.2f' % (end_time - start_time))
-        return ret
-
-    return inner
 
 
 def get_chapter_urls(sourcetext):
@@ -79,10 +67,10 @@ async def download_one(chapter, i):
 
 
 async def download_file(chapter_list):
-    await asyncio.gather(*(download_one(chapter, i) for i, chapter in enumerate(chapter_list, 1)))  # 这么写也ok
+    await asyncio.gather(*(download_one(chapter, i) for i, chapter in enumerate(chapter_list, 1)))  # 加了下载序列号 方便文件排序
 
 
-@wraggper
+
 def main():
     url = 'https://www.mingchaonaxieshier.com/'
     source_page = get_source_page(url)
