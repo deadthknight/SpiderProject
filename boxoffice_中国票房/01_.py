@@ -94,12 +94,4 @@ def all_data():
 
 if __name__ == "__main__":
     pprint(all_data())
-    from multiprocessing.dummy import Pool
-    import time
 
-    pool = Pool(30)
-    t1 = time.time()
-    pool.map(download_file, get_url_list())
-    print("全部下载完毕！！！")
-    t2 = time.time()
-    print('本次操作时间: %.2f' % (t2 - t1))  # 计算并且打印扫描时间
