@@ -54,7 +54,7 @@ async def download_file(url_list):
 @run_time
 def main():
     url_list = []
-    for i in range(2017, 2019):
+    for i in range(2014, 2024):
         url = f'http://www.boxofficecn.com/boxoffice{i}'
         url_list.append(url)
     totals = asyncio.run(download_file(url_list))

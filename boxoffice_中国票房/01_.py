@@ -73,7 +73,7 @@ def main(url):
 @wraggper
 def all_data():
     url_list = []
-    for i in range (1996 , 2024):
+    for i in range (2014 , 2024):
         url = f'http://www.boxofficecn.com/boxoffice{i}'
         url_list.append(url)
 
