@@ -36,9 +36,10 @@ def parse_source_page(source_page):
 
 def diff(data_list):
     # 使用集合去重
-    data_set = {tuple(data.items()) for data in data_list}
-    # 将元组转换回字典
-    unique_list = [dict(item) for item in data_set]
+    # data_set = {tuple(data.items()) for data in data_list}
+    # # 将元组转换回字典
+    # unique_list = [dict(item) for item in data_set]
+    unique_list = [dict(x) for x in {tuple(data.items()) for data in data_list}]
     return unique_list
 
 def main():
