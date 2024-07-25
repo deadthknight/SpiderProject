@@ -12,7 +12,7 @@ def get_source_page(url):
               "action":'',
               "start": "0",
               "limit":" 20"}
-    response = requests.get(url, headers=readheaders('./header.txt'), params=params, verify=False)
+    response = requests.get(url, headers=readheaders('./header.txt'), params=params)
     # response.encoding = chardet.detect(response.content)['encoding'] #解决乱码 方案一
     # response.encoding = "UTF-8"  #方案二
     return response.text
