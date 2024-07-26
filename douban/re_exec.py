@@ -6,29 +6,35 @@ from readheader import readheaders
 import chardet
 from lxml import etree
 
+
 def get_source_page(url):
-    params = {"type": "3",
-              "interval_id": "100:90",
-              "action":'',
-              "start": "0",
-              "limit":" 20"}
-    response = requests.get(url, headers=readheaders('./header.txt'), params=params)
+    response = requests.get(url, headers=readheaders('./header.txt'))
     # response.encoding = chardet.detect(response.content)['encoding'] #解决乱码 方案一
     # response.encoding = "UTF-8"  #方案二
     return response.text
 
+
 def parse_data(source_page):
-    obj = re.compile()
-    return page_source
-
-
+    obj = re.compile(
+        r'div class="item">.*?<em class="">(?P<rate>.*?)</em>.*?<div class="hd">.*?<a href="(?P<src>.*?)" class="">.*?'
+        r'<span class="title">(?P<title>.*?)</span>.*?average">(?P<score>.*?)'
+        r'</span>.*?<span>(?P<num>.*?)</span>', re.S)
+    res = obj.finditer(source_page)
+    lst = []
+    for item in res:
+        dic = item.groupdict()
+        lst.append(dic)
+    return lst
 
 
 def main():
-    url = 'https://movie.douban.com/top250'
-    source_page = get_source_page(url)
-    # page_source = parse_data(source_page)
-    print(source_page)
+    for i in range(10):
+        url = f'https://movie.douban.com/top250?start={i * 25}&filter='
+        source_page = get_source_page(url)
+        lst = parse_data(source_page)
+        for x in lst:
+            print(x)
+
 
 if __name__ == '__main__':
     main()
