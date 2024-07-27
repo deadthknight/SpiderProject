@@ -85,8 +85,10 @@ b = {4, 5, 6, 7, 8}
 # m = map(lambda x:x*2,lst)
 # print(list(m))
 
-lst = [{'1':'w'}, {'2':"w"}, {'1':"w"}]
-x =   [dict(y) for y in   {tuple(x.items()) for x in lst}]
-print(x)
+# lst = [{'1':'w'}, {'2':"w"}, {'1':"w"}]
+# x =   [dict(y) for y in   {tuple(x.items()) for x in lst}]
+# print(x)
 
-
+lst = ['1']
+str = ''.join(lst)
+print(str)
