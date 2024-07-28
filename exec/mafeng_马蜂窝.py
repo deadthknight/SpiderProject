@@ -35,7 +35,7 @@ def join(data):
 def parse_data(url,pg_source):
     # item_list = pg_source["html"]  #get比较好
     item_list = pg_source.get("html", "")
-    tree = etree.HTML(item_list)
+    tree = etree.HTML(item_list) #type: etree._Element
     items = tree.xpath('//a')
     lst = []
     for item in items:

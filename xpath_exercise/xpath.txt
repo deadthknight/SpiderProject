@@ -1,3 +1,6 @@
+
+tree = etree.HTML(item_list) #type: etree._Element  有提示了
+
 选取p类型倒数第1个子元素
 
 //p[last()]

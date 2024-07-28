@@ -33,9 +33,10 @@ def get_infor_house(url):
 
     response = requests.get(url=url, headers=headers).text
 
-    tree = etree.HTML(response)
+    tree = etree.HTML(response) #tpye:etree._Element
 
     div_list = tree.xpath('//section[@class="list"]/div')
+
 
     for div in div_list:
         # text = div.xpath('./a/div[2]/div[1]/div[1]/h3/text()')
