@@ -7,28 +7,27 @@ from urllib.parse import urljoin
 from readheader import readheaders
 
 headers = readheaders('../http_header.txt')
-def get_page_source(url):
-    for x in range(1,25):
-        try:
-            params = {"act": "GetContentList",
-                      "s_dept_time[]": "all",
-                      "price[]": "all",
-                      "from": "NaN",
-                      "kw": '',
-                      "to": "M10765P日本",
-                      "salesType": "NaN",
-                      "page": f"{x}",
-                      "group": "1",
-                      "sort": "smart",
-                      "sort_type": "desc",
-                      "limit": "20"}
-            response = requests.get(url=url,  headers=headers, params=params)
-            response.raise_for_status()
-            # 自动检测：chardet 可以自动检测字节流的编码，确保我们能够正确解码网页内容
-            # response.encoding = chardet.detect(response.content)['encoding']
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"获取失败：{e}")
+def get_page_source(url,x):
+    try:
+        params = {"act": "GetContentList",
+                  "s_dept_time[]": "all",
+                  "price[]": "all",
+                  "from": "NaN",
+                  "kw": '',
+                  "to": "M10765P日本",
+                  "salesType": "NaN",
+                  "page": f"{x}",
+                  "group": "1",
+                  "sort": "smart",
+                  "sort_type": "desc",
+                  "limit": "20"}
+        response = requests.get(url=url,  headers=headers, params=params)
+        response.raise_for_status()
+        # 自动检测：chardet 可以自动检测字节流的编码，确保我们能够正确解码网页内容
+        # response.encoding = chardet.detect(response.content)['encoding']
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"获取失败：{e}")
 
 
 def join(data):
@@ -55,9 +54,12 @@ def parse_data(url,pg_source):
 
 def main():
     url = 'https://www.mafengwo.cn/sales/ajax_2017.php?'
-    pg_source = get_page_source(url)
-    data = parse_data(url,pg_source)
-    print(len(data))
+    lst = []
+    for x in range (1,25):
+        pg_source = get_page_source(url,x)
+        data = parse_data(url,pg_source)
+        lst.extend(data)
+    print(len(lst))
 
 
 if __name__ == '__main__':
