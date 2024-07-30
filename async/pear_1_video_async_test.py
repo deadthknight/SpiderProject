@@ -3,28 +3,27 @@
 import requests
 from lxml import etree
 from readheader import readheaders
-from bs4 import BeautifulSoup
-from pprint import pprint
-import random
 import chardet
+import random
 headers = readheaders('./pear_header.txt')
-url = 'https://www.pearvideo.com/popular?'
+url = 'https://www.pearvideo.com/videoStatus.jsp?'
+mrd = random.random()
+param = {"contId": "1795528",
+         "mrd":f"{mrd}"}
 
-# param = {'reqType': '',
-#          'categoryId': '',
-#          'start': 0,
-#          'sort': 0,
-#          }
-
-response = requests.get(url=url, headers=headers)
+response = requests.get(url=url, headers=headers,params=param)
 response.encoding = chardet.detect(response.content)['encoding']
 
-tree = etree.HTML(response.text)
-li_list = tree.xpath('//*[@id="popularList"]/li')
-print(li_list)
-# print(tree)
-
-
+source = response.json()
+srcUrl = source['videoInfo']['videos']['srcUrl']
+print(source)
+print(srcUrl)
+systemTime = source['systemTime']
+contId = param["contId"]
+video_url = srcUrl.replace(systemTime, f"cont-{contId}")
+print("拼接后的URL为：", video_url)
+# https://video.pearvideo.com/mp4/short/20240727/1722323089020-16033679-hd.mp4
+# https://video.pearvideo.com/mp4/short/20240727/cont-1795528-16033679-hd.mp4
 
 
 # video_date = requests.get(url=video_url, headers=headers).content
