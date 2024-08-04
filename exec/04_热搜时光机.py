@@ -29,7 +29,7 @@ aes = AES.new(key=key_bs,mode = AES.MODE_ECB)         #mode:n.mode.ECB   key = r
 # a->sha1 计算 -> 取前32位->hex转换
 decrypt_file = aes.decrypt(encrypt_file_bs)
 # print(decrypt_file)
-decrypt_file = unpad(decrypt_file,16)
+decrypt_file = unpad(decrypt_file,16)    #去除填充
 
 decrypt_file = decrypt_file.decode('utf-8')
 print(type(decrypt_file))
