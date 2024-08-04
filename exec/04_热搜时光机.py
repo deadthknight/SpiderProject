@@ -24,7 +24,7 @@ key = obj.hexdigest()[:32]
 key_bs = bytes.fromhex(key) #内置方法   方法二
 # print(len(key_bs)) #验证key，aeskey 至少16位
 encrypt_file = response.text
-encrypt_file_bs = base64.b64decode(encrypt_file)     #o=n.enc.Base64.parse(i)
+encrypt_file_bs = base64.b64decode(encrypt_file)     #o=n.enc.Base64.parse(i)   enc.Base64 字符串i是经过base64编码的，parse的意思是转换位字节流
 aes = AES.new(key=key_bs,mode = AES.MODE_ECB)         #mode:n.mode.ECB   key = r = a
 # a->sha1 计算 -> 取前32位->hex转换
 decrypt_file = aes.decrypt(encrypt_file_bs)
