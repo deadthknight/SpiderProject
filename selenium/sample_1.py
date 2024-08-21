@@ -19,6 +19,7 @@ ocr = ddddocr.DdddOcr()
 
 # 创建一个Chrome选项对象
 chrome_options = Options()
+chrome_options.add_argument('--ignore-certificate-errors')    #关闭https
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 chrome_options.add_argument(f'user-agent={user_agent}')
 
@@ -53,6 +54,7 @@ while True:
     pngData = driver.find_element(By.ID, 'codeImg').screenshot_as_png
     result = ocr.classification(pngData)  # 验证码
     # print('验证码是', result)
+    captcha_input.clear()  # 清除之前的验证码输入
     captcha_input.send_keys(result)  # 输入验证码
 
     login_button = driver.find_element(By.XPATH, "//div/input[@type='button' and @value='登录']")
@@ -77,7 +79,11 @@ login_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By
 
 login_input.click()
 
+elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
+for element in elements:
+    study_status = element.find_elements(By.XPATH, '//*[@class="join_status"][last()]/text()')
 
+    print(study_status)
 
 input('')
 
