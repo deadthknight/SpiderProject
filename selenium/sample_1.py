@@ -1,36 +1,85 @@
-#!usr/bin/env python3.11    # Python解释器
+#!/usr/bin/env python3.11    # Python解释器
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+import ddddocr
+import random
 
-# 创建 WebDriver 对象，指明使用chrome浏览器驱动
-wd = webdriver.Chrome(service=Service(r'f:\Python\tool\chromedriver-win64\chromedriver.exe'))
 
-# 调用WebDriver 对象的get方法 可以让浏览器打开指定网址
-# wd.get('https://www.baidu.com')
-#
-# element = wd.find_element(By.ID, 'kw')
-# element.send_keys('天气')
-#
-# element = wd.find_element(By.ID, 'su')
-# element.click()
-# 程序运行完会自动关闭浏览器，就是很多人说的闪退
-# 这里加入等待用户输入，防止闪退
-# input('等待回车键结束程序')
+def random_wait(min_time=1, max_time=3):
+    time.sleep(random.uniform(min_time, max_time))
+
+
+ocr = ddddocr.DdddOcr()
+
+# 创建一个Chrome选项对象
+chrome_options = Options()
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+chrome_options.add_argument(f'user-agent={user_agent}')
+
+# 启动浏览器
+driver = webdriver.Chrome(options=chrome_options,
+                          service=Service(r'E:\PycharmProjects\chromedriver_win32\chromedriver.exe'))
+
+
+# 最大化浏览器窗口
+driver.maximize_window()
+
+# 第一次访问目标网站
+driver.get('https://www.samrela.com/')
+
+driver.implicitly_wait(5)
+
+
+
+
+# 输入用户名、密码和验证码
+username_input = driver.find_element(By.ID, 'username')
+password_input = driver.find_element(By.ID, 'pwd')
+captcha_input = driver.find_element(By.ID, 'yzm')
+
+username_input.send_keys('13810909692')  # 替换为实际的用户名
+random_wait()
+password_input.send_keys('Oa@82261222')  # 替换为实际的密码
+random_wait()
+
+while True:
+# 获取验证码
+    pngData = driver.find_element(By.ID, 'codeImg').screenshot_as_png
+    result = ocr.classification(pngData)  # 验证码
+    # print('验证码是', result)
+    captcha_input.send_keys(result)  # 输入验证码
+
+    login_button = driver.find_element(By.XPATH, "//div/input[@type='button' and @value='登录']")
+    login_button.click()
+
+    # 处理验证码错误的弹出框
+    try:
+        WebDriverWait(driver, 5).until(EC.alert_is_present())
+        alert = driver.switch_to.alert
+        random_wait()
+        alert.accept()  # 接受弹出框
+        print('验证码错误，重新获取验证码...')
+        random_wait()
+        continue  # 重新循环获取新验证码
+    except:
+        # 如果没有弹出框，说明登录可能成功
+        print('登录尝试完成')
+        break  # 退出循环
+
+# # 登录状态检查
+login_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(), '进入学员中心')]")))
+
+login_input.click()
+
+
+
+input('')
 
 if __name__ == "__main__":
-    # https: // www.byhy.net / auto / selenium / 02 /
-    # 根据 class属性 选择元素
-    # 调用WebDriver 对象的get方法 可以让浏览器打开指定网址
-    wd.get('https://cdn2.byhy.net/files/selenium/sample1.html')
-
-    # elements = wd.find_elements(By.CLASS_NAME, 'animal')
-    # for element in elements:
-    #     print (element.text)
-    elements = wd.find_elements(By.TAG_NAME,'div')
-
-    # 程序运行完会自动关闭浏览器，就是很多人说的闪退
-    # 这里加入等待用户输入，防止闪退
-    input('等待回车键结束程序')
-
+    pass
