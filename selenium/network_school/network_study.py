@@ -17,8 +17,10 @@ with open('config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
+
 def random_wait(min_time=1, max_time=3):
     time.sleep(random.uniform(min_time, max_time))
+
 
 def calculate_time(original_value, percentage_str):
     """
@@ -35,7 +37,7 @@ def calculate_time(original_value, percentage_str):
     percentage = float(percentage_str.strip('%')) / 100
 
     # 计算减少后的值
-    decreased_value = int(original_value * (1 - percentage))*60
+    decreased_value = int(original_value * (1 - percentage)) * 60
 
     return decreased_value
 
@@ -44,14 +46,14 @@ ocr = ddddocr.DdddOcr()
 
 # 创建一个Chrome选项对象
 chrome_options = Options()
-chrome_options.add_argument('--ignore-certificate-errors')    #关闭https
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+chrome_options.add_argument('--ignore-certificate-errors')  # 关闭https
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
+             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 chrome_options.add_argument(f'user-agent={user_agent}')
 
 # 启动浏览器
 driver = webdriver.Chrome(options=chrome_options,
                           service=Service(r'E:\PycharmProjects\chromedriver_win32\chromedriver.exe'))
-
 
 # 最大化浏览器窗口
 driver.maximize_window()
@@ -60,9 +62,6 @@ driver.maximize_window()
 driver.get('https://www.samrela.com/')
 
 driver.implicitly_wait(5)
-
-
-
 
 # 输入用户名、密码和验证码
 username_input = driver.find_element(By.ID, 'username')
@@ -75,7 +74,7 @@ password_input.send_keys(password)  # 替换为实际的密码
 random_wait()
 
 while True:
-# 获取验证码
+    # 获取验证码
     pngData = driver.find_element(By.ID, 'codeImg').screenshot_as_png
     result = ocr.classification(pngData)  # 验证码
     # print('验证码是', result)
@@ -94,13 +93,14 @@ while True:
         print('验证码错误，重新获取验证码...')
         random_wait()
         continue  # 重新循环获取新验证码
-    except:
+    except Exception :
         # 如果没有弹出框，说明登录可能成功
         print('登录尝试完成')
         break  # 退出循环
 
 # # 登录状态检查
-login_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(), '进入学员中心')]")))
+login_input = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//a[contains(text(), '进入学员中心')]")))
 
 login_input.click()
 
@@ -175,12 +175,13 @@ while True:
                 click_study.click()
                 driver.switch_to.window(driver.window_handles[-1])
                 wait = WebDriverWait(driver, 10)
-                start_study = wait.until(EC.presence_of_element_located((By.XPATH, '//div[contains(text(), "开始学习")]')))
+                start_study = wait.until(EC.presence_of_element_located(
+                    (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+                ))
                 start_study.click()
                 time.sleep(sleep_time + 100)  # 等待视频播放完成
                 driver.close()
                 driver.switch_to.window(driver.window_handles[-1])
-
             driver.back()
             time.sleep(2)  # 等待页面加载
 
