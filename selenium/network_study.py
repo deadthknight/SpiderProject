@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 import time
 import ddddocr
 import random
@@ -13,6 +15,25 @@ import random
 
 def random_wait(min_time=1, max_time=3):
     time.sleep(random.uniform(min_time, max_time))
+
+def calculate_time(original_value, percentage_str):
+    """
+    计算给定百分比减少后的值。
+
+    参数:
+    original_value (float 或 int): 原始值
+    percentage_str (str): 百分比字符串，格式如 '2.37%'
+
+    返回:
+    float: 减少后的值
+    """
+    # 提取百分比数字并转换为浮点数
+    percentage = float(percentage_str.strip('%')) / 100
+
+    # 计算减少后的值
+    decreased_value = int(original_value * (1 - percentage))*60
+
+    return decreased_value
 
 
 ocr = ddddocr.DdddOcr()
@@ -98,29 +119,64 @@ for element in elements:
         for lesson in lessons:
             learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
             learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
+            print(learning_process.text, learning_time.text)
+            learning_time = int(learning_time.text.strip().split(' ')[0])
+            sleep_time = calculate_time(learning_time,learning_process.text)
+
+            print(sleep_time)
             if learning_process.text == '100.0%':
                 continue
-            print(learning_process.text,learning_time.text)
             click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
             click_study.click()
             driver.switch_to.window(driver.window_handles[-1])
             wait = WebDriverWait(driver, 10)
+            start_study = wait.until(EC.presence_of_element_located((By.XPATH, '//div[contains(text(), "开始学习")]')))
+            if start_study:
+                driver.execute_script("$(arguments[0]).click();", start_study)
+                time.sleep(1000)
+            else:
+                time.sleep(1000)
+# for element in elements:
+#     # 重新查找状态元素
+#     study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
+#     last_join_status = study_status[-1]
+#     if last_join_status.text == '未结业':
+#         study_in_element = element.find_element(By.XPATH, './/img')
+#         # # 滚动到指定位置
+#         # driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
+#         time.sleep(1)
+#         study_in_element.click()
+#         # 等待课程元素加载
+#         lessons = WebDriverWait(driver, 10).until(
+#             EC.presence_of_all_elements_located((By.XPATH, '//div[@class="hoz_course_row"]'))
+#         )
+#
+#         for lesson in lessons:
+#             learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
+#             learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
+#
+#             if learning_process.text == '100.0%':
+#                 continue
+#
+#             # print(learning_process.text, learning_time.text)
+#
+#             click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
+#             # 点击并切换到新窗口
+#             click_study.click()
+#             driver.switch_to.window(driver.window_handles[-1])
+#             try:
+#                 # 等待并开始学习
+#                 start_study = WebDriverWait(driver, 10).until(
+#                     EC.presence_of_element_located((By.XPATH, './/div[contains(text(), "开始学习")]'))
+#                 )
+#                 driver.execute_script("arguments[0].click();", start_study)
+#                 time.sleep(1000)
+#
+#             except StaleElementReferenceException as e:
+#                 print(f"S======: {e}")
+#                 # 在捕获到 StaleElementReferenceException 时，可以尝试重新查找元素
+#                 continue
 
-            try:
-                # 等待弹出框的容器元素可见
-                popup_element = wait.until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, '.continue'))
-                )
-
-                # 等待并点击按钮
-                start_or_continue_button = wait.until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, '.continue .user_choise'))
-                )
-                start_or_continue_button.click()
-
-            except Exception as e:
-                print(f"处理弹出框时出错: {e}")
-input('')
 
 if __name__ == "__main__":
     pass
