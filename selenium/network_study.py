@@ -102,81 +102,96 @@ login_input.click()
 
 # 切换到新打开的页面
 driver.switch_to.window(driver.window_handles[-1])
-elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
-
-for element in elements:
-    study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
-    study_in_element = element.find_element(By.XPATH, './/img')
-    last_join_status = study_status[-1]
-    if last_join_status.text == '未结业':
-        # 滚动到指定位置
-        # driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
-        # time.sleep(1)
-        study_in_element.click()
-        # 点击
-        # driver.execute_script("arguments[0].click();", study_in_element)
-        lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
-        for lesson in lessons:
-            learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
-            learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
-            print(learning_process.text, learning_time.text)
-            learning_time = int(learning_time.text.strip().split(' ')[0])
-            sleep_time = calculate_time(learning_time,learning_process.text)
-
-            print(sleep_time)
-            if learning_process.text == '100.0%':
-                continue
-            click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
-            click_study.click()
-            driver.switch_to.window(driver.window_handles[-1])
-            wait = WebDriverWait(driver, 10)
-            start_study = wait.until(EC.presence_of_element_located((By.XPATH, '//div[contains(text(), "开始学习")]')))
-            if start_study:
-                driver.execute_script("$(arguments[0]).click();", start_study)
-                time.sleep(1000)
-            else:
-                time.sleep(1000)
+# elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
+#
 # for element in elements:
-#     # 重新查找状态元素
 #     study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
+#     study_in_element = element.find_element(By.XPATH, './/img')
 #     last_join_status = study_status[-1]
 #     if last_join_status.text == '未结业':
-#         study_in_element = element.find_element(By.XPATH, './/img')
-#         # # 滚动到指定位置
+#         # 滚动到指定位置
 #         # driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
-#         time.sleep(1)
+#         # time.sleep(1)
 #         study_in_element.click()
-#         # 等待课程元素加载
-#         lessons = WebDriverWait(driver, 10).until(
-#             EC.presence_of_all_elements_located((By.XPATH, '//div[@class="hoz_course_row"]'))
-#         )
-#
+#         # 点击
+#         # driver.execute_script("arguments[0].click();", study_in_element)
+#         lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
 #         for lesson in lessons:
 #             learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
 #             learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
-#
+#             # print(learning_process.text, learning_time.text)
+#             learning_time = int(learning_time.text.strip().split(' ')[0])
+#             sleep_time = calculate_time(learning_time,learning_process.text)
 #             if learning_process.text == '100.0%':
 #                 continue
-#
-#             # print(learning_process.text, learning_time.text)
-#
 #             click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
-#             # 点击并切换到新窗口
 #             click_study.click()
 #             driver.switch_to.window(driver.window_handles[-1])
-#             try:
-#                 # 等待并开始学习
-#                 start_study = WebDriverWait(driver, 10).until(
-#                     EC.presence_of_element_located((By.XPATH, './/div[contains(text(), "开始学习")]'))
-#                 )
-#                 driver.execute_script("arguments[0].click();", start_study)
-#                 time.sleep(1000)
-#
-#             except StaleElementReferenceException as e:
-#                 print(f"S======: {e}")
-#                 # 在捕获到 StaleElementReferenceException 时，可以尝试重新查找元素
-#                 continue
+#             wait = WebDriverWait(driver, 10)
+#             start_study = wait.until(EC.presence_of_element_located((By.XPATH, '//div[contains(text(), "开始学习")]')))
+#             start_study.click()
+#             time.sleep(sleep_time + 100)  #等待视频播放完成
+#             continue
+#         driver.back()
 
+
+# 初始化索引
+current_index = 0
+
+while True:
+    # 查找页面上的元素
+    elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
+
+    if current_index >= len(elements):
+        # 如果当前索引超出范围，跳出循环
+        break
+
+    # 确保处理每个元素并处理状态更新
+    while current_index < len(elements):
+        element = elements[current_index]
+        study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
+        study_in_element = element.find_element(By.XPATH, './/img')
+        last_join_status = study_status[-1]
+        if last_join_status.text == '未结业':
+            # 滚动到指定位置
+            driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
+            time.sleep(1)
+            study_in_element.click()
+
+            # 点击后处理
+            lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
+            for lesson in lessons:
+                learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
+                learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
+                learning_time = int(learning_time.text.strip().split(' ')[0])
+                sleep_time = calculate_time(learning_time, learning_process.text)
+                if learning_process.text == '100.0%':
+                    continue
+                click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
+                click_study.click()
+                driver.switch_to.window(driver.window_handles[-1])
+                wait = WebDriverWait(driver, 10)
+                start_study = wait.until(EC.presence_of_element_located((By.XPATH, '//div[contains(text(), "开始学习")]')))
+                start_study.click()
+                time.sleep(sleep_time + 100)  # 等待视频播放完成
+                driver.close()
+                driver.switch_to.window(driver.window_handles[-1])
+
+            driver.back()
+            time.sleep(2)  # 等待页面加载
+
+            # 更新索引
+            current_index += 1
+            break
+        else:
+            # 如果当前元素已经处理过，直接更新索引
+            current_index += 1
+
+    # # 可选: 添加退出循环的条件
+    # if not more_elements_to_process():
+    #     break
+
+driver.quit()
 
 if __name__ == "__main__":
     pass
