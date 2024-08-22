@@ -1,1 +1,3 @@
+Host:m.lianjia.com
+Referer:https://m.lianjia.com/bj/ershoufang/rs%E5%90%8D%E9%83%BD%E5%9B%AD/
 User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36

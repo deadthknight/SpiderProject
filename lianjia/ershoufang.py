@@ -13,6 +13,7 @@ def get_source_page(url,page):
               "curPage": page}
     response = requests.get(url,headers=headers,params=params)
     # print(response.request.url)
+    print(response.status_code)
     return response.json()
 def parse_source_page(source_page):
     total = []
