@@ -79,11 +79,23 @@ login_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By
 
 login_input.click()
 
+# 切换到新打开的页面
+driver.switch_to.window(driver.window_handles[-1])
 elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
-for element in elements:
-    study_status = element.find_elements(By.XPATH, '//*[@class="join_status"][last()]/text()')
 
-    print(study_status)
+for element in elements:
+    study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
+    study_in_element = element.find_element(By.XPATH, './/img')
+    last_join_status = study_status[-1]
+    if last_join_status.text == '未结业':
+        # 滚动到指定位置
+        # driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
+        # time.sleep(1)
+        study_in_element.click()
+        # 点击
+        # driver.execute_script("arguments[0].click();", study_in_element)
+
+
 
 input('')
 
