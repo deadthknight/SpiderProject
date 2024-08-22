@@ -94,9 +94,32 @@ for element in elements:
         study_in_element.click()
         # 点击
         # driver.execute_script("arguments[0].click();", study_in_element)
+        lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
+        for lesson in lessons:
+            learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
+            learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
+            if learning_process.text == '100.0%':
+                continue
+            print(learning_process.text,learning_time.text)
+            click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
+            click_study.click()
+            driver.switch_to.window(driver.window_handles[-1])
+            wait = WebDriverWait(driver, 10)
 
+            try:
+                # 等待弹出框的容器元素可见
+                popup_element = wait.until(
+                    EC.visibility_of_element_located((By.CSS_SELECTOR, '.continue'))
+                )
 
+                # 等待并点击按钮
+                start_or_continue_button = wait.until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, '.continue .user_choise'))
+                )
+                start_or_continue_button.click()
 
+            except Exception as e:
+                print(f"处理弹出框时出错: {e}")
 input('')
 
 if __name__ == "__main__":
