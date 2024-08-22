@@ -6,12 +6,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 import time
 import ddddocr
 import random
+import json
 
+with open('config.json', 'r') as file:
+    config = json.load(file)
+
+username = config['username']
+password = config['password']
 
 def random_wait(min_time=1, max_time=3):
     time.sleep(random.uniform(min_time, max_time))
@@ -65,9 +69,9 @@ username_input = driver.find_element(By.ID, 'username')
 password_input = driver.find_element(By.ID, 'pwd')
 captcha_input = driver.find_element(By.ID, 'yzm')
 
-username_input.send_keys('13810909692')  # 替换为实际的用户名
+username_input.send_keys(username)  # 替换为实际的用户名
 random_wait()
-password_input.send_keys('Oa@82261222')  # 替换为实际的密码
+password_input.send_keys(password)  # 替换为实际的密码
 random_wait()
 
 while True:
