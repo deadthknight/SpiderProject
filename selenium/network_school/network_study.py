@@ -187,6 +187,7 @@ while True:
 
             # 更新索引
             current_index += 1
+            print("本专题班学习完毕，开始下一个")
             break
         else:
             # 如果当前元素已经处理过，直接更新索引
