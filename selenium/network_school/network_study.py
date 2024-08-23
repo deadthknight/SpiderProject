@@ -175,10 +175,22 @@ while True:
                 click_study.click()
                 driver.switch_to.window(driver.window_handles[-1])
                 wait = WebDriverWait(driver, 10)
-                start_study = wait.until(EC.presence_of_element_located(
-                    (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
-                ))
-                start_study.click()
+                max_retries = 3
+                retries = 0
+
+                while retries < max_retries:
+                    try:
+                        # 等待并查找“开始学习”或“继续学习”按钮
+                        start_study = wait.until(EC.presence_of_element_located(
+                            (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+                        ))
+                        start_study.click()
+                        break  # 找到并点击后跳出循环
+                    except Exception :
+                        retries += 1
+                        print(f"未找到‘开始学习’或‘继续学习’按钮，重新加载页面并重试第 {retries} 次...")
+                        driver.refresh()  # 刷新页面
+                        time.sleep(3)  # 等待页面加载完成
                 time.sleep(sleep_time + 100)  # 等待视频播放完成
                 driver.close()
                 driver.switch_to.window(driver.window_handles[-1])
