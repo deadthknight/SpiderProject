@@ -18,7 +18,7 @@ for x in range(3):
         # 保存图片
         img.save(r'.\imgs')
     print(f"第{x+1}页下载完毕")
-    btn = page('后页', timeout=2)
+    btn = page('后页', timeout=2)   #2s超时  默认page.set.timeout = 10
     if btn:
         btn.click()
         page.wait.load_start()  # 等待页面开始加载
