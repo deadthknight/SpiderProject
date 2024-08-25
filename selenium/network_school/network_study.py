@@ -55,7 +55,7 @@ chrome_options.add_argument(f'user-agent={user_agent}')
 
 # 启动浏览器
 driver = webdriver.Chrome(options=chrome_options,
-                          service=Service(r'E:\PycharmProjects\chromedriver_win32\chromedriver.exe'))
+                          service=Service(r'F:\Python\tool\chromedriver-win64\chromedriver.exe'))
 try:
     driver.maximize_window()
 
