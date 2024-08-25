@@ -122,8 +122,7 @@ try:
         while current_index < len(elements):
             element = elements[current_index]
             study_name = element.find_element(By.XPATH, './/*[@class="join_course_name"]').text
-            print(f'学习第{current_index + 1}个专题')
-            print(f'{study_name}')
+            print(f'学习第{current_index + 1}个专题{study_name}')
             study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
             study_in_element = element.find_element(By.XPATH, './/img')
             last_join_status = study_status[-1]
