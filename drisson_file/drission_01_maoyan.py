@@ -5,6 +5,9 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 co = ChromiumOptions()
 co.headless(False)  # 不使用无头模式
 co.incognito(True)  # 使用无痕模式
+co.set_argument('--no-sandbox')  # 无沙盒模式
+# 设置启动时最大化
+co.set_argument('--start-maximized')
 
 # 创建页面对象
 page = ChromiumPage(co)
