@@ -115,19 +115,23 @@ try:
         elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
 
         if current_index >= len(elements):
+            print('全部课程学习完毕')
             break
 
         # 处理当前专题班
         while current_index < len(elements):
             element = elements[current_index]
+            study_name = element.find_element(By.XPATH, './/*[@class="join_course_name"]').text
+            print(f'学习第{current_index + 1}个专题')
+            print(f'{study_name}')
             study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
             study_in_element = element.find_element(By.XPATH, './/img')
             last_join_status = study_status[-1]
             if last_join_status.text == '未结业':
+                print(f'开始学习=====>{study_name}')
                 driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
                 time.sleep(1)
                 study_in_element.click()
-
                 lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
                 for lesson in lessons:
                     learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
@@ -136,11 +140,9 @@ try:
                     sleep_time = calculate_time(learning_time, learning_process.text)
                     if learning_process.text == '100.0%':
                         continue
-
                     click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
                     click_study.click()
                     driver.switch_to.window(driver.window_handles[-1])
-
                     # 等待并点击“开始学习”按钮
                     start_study = WebDriverWait(driver, 10).until(
                         EC.presence_of_element_located(
@@ -149,28 +151,27 @@ try:
                     )
                     start_study.click()
                     time.sleep(sleep_time + 100)
-
                     driver.close()
                     driver.switch_to.window(driver.window_handles[-1])
                 driver.back()
-
                 # 等待并获取重新加载的元素
                 WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, '//div[@class="join_special_list"]'))
                 )
                 time.sleep(2)
-
                 current_index += 1
-                print("本专题班学习完毕，开始下一个")
+                print(f'{study_name}学习完毕，开始学习下一个')
                 break
             else:
+                print(f'{study_name}已结业')
                 current_index += 1
 
 except Exception as e:
     log_error(e)
 finally:
+    print('关闭浏览器')
     driver.quit()
-    print('全部课程学习完毕')
+
 
 if __name__ == "__main__":
     pass
