@@ -159,7 +159,7 @@ try:
                 )
                 time.sleep(2)
                 current_index += 1
-                print(f'{study_name}学习完毕，开始学习下一个')
+                print(f'{study_name}学习完毕，开始学习下一个专题')
                 break
             else:
                 print(f'{study_name}已结业')
