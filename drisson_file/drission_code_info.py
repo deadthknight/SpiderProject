@@ -1,6 +1,7 @@
 from DrissionPage import ChromiumPage, ChromiumOptions
 
 co = ChromiumOptions()
+# co.set_browser_path()  #浏览器地址，默认是chrome
 # 无头模式
 co.headless(False)
 # 无痕模式#无头模式
@@ -12,7 +13,7 @@ co.set_argument('--hide-crash-restore-bubble')
 page = ChromiumPage()
 
 # page.set.window.max() # 使窗口最大化。
-from TimePinner import Pinner  # 导入计时工具
+# from TimePinner import Pinner  # 导入计时工具
 
 # ===================================================
 # pinner = Pinner()  # 创建计时器对象
@@ -43,4 +44,13 @@ from TimePinner import Pinner  # 导入计时工具
 # ===========================================================
 
 page.get('https://www.baidu.com', retry=1, interval=1, timeout=1.5)  # 重传次数 间隔 超时时间
-print(page(".title-content-title").text)
+print(f'==============================\n'
+      f'当前对象地址和端口:{page.address}\n'
+      f'请求头:{page.user_agent}\n'
+      f'是否正在加载：{page.states.ready_state}')
+      # f'cookies:{page.cookies(as_dict=False)}')
+page('x://input[@id="kw"]').input('Drissionpage')  #找到输入框 输入Drissionpage
+page.ele('x://input[@id="su"]').click()   #点击按钮
+page.wait.load_start()   #等待页面加载
+
+print('Page Title:', page('x:/html/head/title').text)

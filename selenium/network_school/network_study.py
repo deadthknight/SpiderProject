@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.11    # Python解释器
+#!/usr/bin/env python3.11
 # -*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -18,9 +18,11 @@ logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
+
 def log_error(e):
     """记录错误日志"""
     logging.error(f"Error occurred: {e}")
+
 
 # 读取配置文件
 with open('config.json', 'r') as file:
@@ -29,9 +31,11 @@ with open('config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
+
 def random_wait(min_time=1, max_time=3):
     """生成随机等待时间"""
     time.sleep(random.uniform(min_time, max_time))
+
 
 def calculate_time(original_value, percentage_str):
     """计算给定百分比减少后的值"""
@@ -39,19 +43,6 @@ def calculate_time(original_value, percentage_str):
     decreased_value = int(original_value * (1 - percentage)) * 60
     return max(decreased_value, 60)  # 设置最小等待时间为60秒
 
-def retry_action(action, max_retries=3, wait_time=3):
-    """封装重试机制"""
-    retries = 0
-    while retries < max_retries:
-        try:
-            return action()
-        except Exception as e:
-            retries += 1
-            print(f"尝试失败，重试第 {retries} 次...")
-            time.sleep(wait_time)
-            driver.refresh()
-            log_error(e)
-    return None
 
 ocr = ddddocr.DdddOcr()
 
@@ -117,10 +108,16 @@ try:
     current_index = 0
 
     while True:
+        # 显式等待并获取页面上的元素
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, '//div[@class="join_special_list"]'))
+        )
         elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
+
         if current_index >= len(elements):
             break
 
+        # 处理当前专题班
         while current_index < len(elements):
             element = elements[current_index]
             study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
@@ -144,22 +141,23 @@ try:
                     click_study.click()
                     driver.switch_to.window(driver.window_handles[-1])
 
-                    # 使用封装的重试机制进行“开始学习”按钮的点击操作
-                    def start_lesson():
-                        return WebDriverWait(driver, 10).until(
-                            EC.presence_of_element_located(
-                                (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
-                            )
+                    # 等待并点击“开始学习”按钮
+                    start_study = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
                         )
-
-                    start_study = retry_action(start_lesson, max_retries=3, wait_time=3)
-                    if start_study:
-                        start_study.click()
-                        time.sleep(sleep_time + 100)
+                    )
+                    start_study.click()
+                    time.sleep(sleep_time + 100)
 
                     driver.close()
                     driver.switch_to.window(driver.window_handles[-1])
                 driver.back()
+
+                # 等待并获取重新加载的元素
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//div[@class="join_special_list"]'))
+                )
                 time.sleep(2)
 
                 current_index += 1
