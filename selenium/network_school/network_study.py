@@ -53,10 +53,10 @@ user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 chrome_options.add_argument(f'user-agent={user_agent}')
 
+# 启动浏览器
+driver = webdriver.Chrome(options=chrome_options,
+                          service=Service(r'E:\PycharmProjects\chromedriver_win32\chromedriver.exe'))
 try:
-    # 启动浏览器
-    driver = webdriver.Chrome(options=chrome_options,
-                              service=Service(r'E:\PycharmProjects\chromedriver_win32\chromedriver.exe'))
     driver.maximize_window()
 
     # 第一次访问目标网站
@@ -170,6 +170,7 @@ except Exception as e:
     log_error(e)
 finally:
     driver.quit()
+    print('全部课程学习完毕')
 
 if __name__ == "__main__":
     pass
