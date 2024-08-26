@@ -23,7 +23,9 @@ print('test3=======================================')
 test3 = page.eles(('@|class=p_cls4@|id=two'))            #class=p_cls或者id=two
 for x in test3:
     print(x.text)
-
+print('test4=======================================')
+test4 = page('.$4').text                                #class以4结尾
+print(test4)
 # print('==============')
 # print(p1.text)
 # print('==============')
