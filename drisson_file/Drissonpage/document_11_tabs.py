@@ -31,3 +31,12 @@
 #     i += 1
 #     if i == 5:
 #         break
+
+
+#动作链
+from DrissionPage import ChromiumPage
+
+page = ChromiumPage()
+page.get('https://www.baidu.com')
+page.actions.move_to('#kw').click().type('天气')
+page.actions.move_to('#su').click()
