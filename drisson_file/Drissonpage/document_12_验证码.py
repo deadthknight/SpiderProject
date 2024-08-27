@@ -10,8 +10,6 @@ with open('../../selenium/network_school/config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
-
-
 co = ChromiumOptions()
 # co.set_browser_path()  #浏览器地址，默认是chrome
 co.headless(False)   # 无头模式
@@ -22,6 +20,7 @@ page = ChromiumPage(co)
 # page.set.auto_handle_alert(all_tabs=True)  # 这之后出现的弹窗都会自动确认
 #===========================================================
 page.get('https://www.samrela.com/')
+
 page('#username').input(username)        #输入用户名
 page('#pwd').input(password)             #输入密码
 while True:
@@ -41,7 +40,7 @@ while True:
         if "验证码错误" in alert_text:
             print("验证码错误，重新尝试")
             continue  # 处理验证码错误，重新尝试
-    else:  # 没有弹窗信息
+    else:  # 没有弹窗信息 会返回False 不能用try。。except
         print('登录成功')
         break
 
