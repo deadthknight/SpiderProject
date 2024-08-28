@@ -18,31 +18,26 @@ logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-
 def log_error(e):
     """记录错误日志"""
     logging.error(f"Error occurred: {e}")
-
 
 # 读取配置文件
 with open('config.json', 'r') as file:
     config = json.load(file)
 
-username = config['username']
-password = config['password']
-
+username = config['username_lu']
+password = config['password_lu']
 
 def random_wait(min_time=1, max_time=3):
     """生成随机等待时间"""
     time.sleep(random.uniform(min_time, max_time))
-
 
 def calculate_time(original_value, percentage_str):
     """计算给定百分比减少后的值"""
     percentage = float(percentage_str.strip('%')) / 100
     decreased_value = int(original_value * (1 - percentage)) * 60
     return max(decreased_value, 60)  # 设置最小等待时间为60秒
-
 
 ocr = ddddocr.DdddOcr()
 
@@ -129,38 +124,47 @@ try:
             if last_join_status.text == '未结业':
                 print(f'开始学习=====>{study_name}')
                 driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
-                time.sleep(1)
+                random_wait()
                 study_in_element.click()
-                lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
-                for lesson in lessons:
-                    learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
-                    learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
-                    learning_time = int(learning_time.text.strip().split(' ')[0])
-                    sleep_time = calculate_time(learning_time, learning_process.text)
-                    if learning_process.text == '100.0%':
-                        continue
-                    click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
-                    click_study.click()
-                    driver.switch_to.window(driver.window_handles[-1])
-                    # 等待并点击“开始学习”按钮
-                    start_study = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located(
-                            (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+
+                # 尝试学习每个课程
+                try:
+                    lessons = driver.find_elements(By.XPATH, '//div[@class="hoz_course_row"]')
+                    for lesson in lessons:
+                        learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
+                        learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
+                        logging.info(f"Processing lesson with learning process: {learning_process.text}")
+                        learning_time = int(learning_time.text.strip().split(' ')[0])
+                        sleep_time = calculate_time(learning_time, learning_process.text)
+                        if learning_process.text == '100.0%':
+                            continue
+                        click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
+                        click_study.click()
+                        driver.switch_to.window(driver.window_handles[-1])
+                        # 等待并点击“开始学习”按钮
+                        start_study = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable(
+                                (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+                            )
                         )
+                        start_study.click()
+                        time.sleep(sleep_time + 100)
+                        random_wait()
+                        driver.close()
+                        driver.switch_to.window(driver.window_handles[-1])
+                        random_wait()
+                    print(f'{study_name}学习完毕，开始学习下一个专题')
+                except Exception as e:
+                    log_error(e)
+                    print(f"Error processing lesson in {study_name}, skipping to next.")
+                finally:
+                    driver.back()
+                    WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.XPATH, '//div[@class="join_special_list"]'))
                     )
-                    start_study.click()
-                    time.sleep(sleep_time + 100)
-                    driver.close()
-                    driver.switch_to.window(driver.window_handles[-1])
-                driver.back()
-                # 等待并获取重新加载的元素
-                WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, '//div[@class="join_special_list"]'))
-                )
-                time.sleep(2)
-                current_index += 1
-                print(f'{study_name}学习完毕，开始学习下一个专题')
-                break
+                    time.sleep(2)
+                    current_index += 1
+                    break
             else:
                 print(f'{study_name}已结业')
                 current_index += 1
@@ -170,7 +174,6 @@ except Exception as e:
 finally:
     print('关闭浏览器')
     driver.quit()
-
 
 if __name__ == "__main__":
     pass
