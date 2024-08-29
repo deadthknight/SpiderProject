@@ -142,12 +142,16 @@ try:
                         click_study.click()
                         driver.switch_to.window(driver.window_handles[-1])
                         # 等待并点击“开始学习”按钮
-                        start_study = WebDriverWait(driver, 10).until(
+                        print("尝试点击 '开始学习' .....")
+                        start_study = WebDriverWait(driver, 20).until(
                             EC.element_to_be_clickable(
                                 (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
                             )
                         )
-                        start_study.click()
+                        print(f"开始学习元素是否出现': {start_study.is_displayed()},是否可以点击: {start_study.is_enabled()}")
+                        driver.execute_script("arguments[0].scrollIntoView(true);", start_study)   #元素滚动到可视区域顶部
+                        time.sleep(1)  # 确保元素可见
+                        driver.execute_script("arguments[0].click();", start_study)
                         time.sleep(sleep_time + 100)
                         random_wait()
                         driver.close()
