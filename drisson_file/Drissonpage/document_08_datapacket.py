@@ -8,7 +8,7 @@ co.headless(False)  # 不使用无头模式
 co.incognito(True)  # 使用无痕模式
 
 page = ChromiumPage(co)
-page.listen.start()
+# page.listen.start()
 # page.get(
 #     'https://ygp.gdzwfw.gov.cn/#/44/new/jygg/v3/A?'
 #     'noticeId=52cd39dd-7015-46fb-8072-a088d1bcb8b1&projectCode=E4401000002400710001&bizCode='

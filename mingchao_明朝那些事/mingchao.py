@@ -77,8 +77,8 @@ async def download_file(chapter_list):
 def main():
     url = 'https://www.mingchaonaxieshier.com/'
     source_page = get_source_page(url)
-    chapter_list = get_chapter_urls(source_page)
-    asyncio.run(download_file(chapter_list))  #如果报错 用下面命令
+    # chapter_list = get_chapter_urls(source_page)
+    # asyncio.run(download_file(chapter_list))  #如果报错 用下面命令
     # event_loop = asyncio.get_event_loop()
     # asyncio.set_event_loop(event_loop)
     # event_loop.run_until_complete(download_file(chapter_list))
