@@ -11,33 +11,37 @@ import ddddocr
 import random
 import json
 import logging
-from datetime import datetime
 
 # 设置日志记录配置
 logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
+
 def log_error(e):
     """记录错误日志"""
     logging.error(f"Error occurred: {e}")
+
 
 # 读取配置文件
 with open('config.json', 'r') as file:
     config = json.load(file)
 
-username = config['username_lu']
-password = config['password_lu']
+username = config['username']
+password = config['password']
+
 
 def random_wait(min_time=1, max_time=3):
     """生成随机等待时间"""
     time.sleep(random.uniform(min_time, max_time))
+
 
 def calculate_time(original_value, percentage_str):
     """计算给定百分比减少后的值"""
     percentage = float(percentage_str.strip('%')) / 100
     decreased_value = int(original_value * (1 - percentage)) * 60
     return max(decreased_value, 60)  # 设置最小等待时间为60秒
+
 
 ocr = ddddocr.DdddOcr()
 
@@ -143,20 +147,31 @@ try:
                         driver.switch_to.window(driver.window_handles[-1])
                         # 等待并点击“开始学习”按钮
                         print("尝试点击 '开始学习' .....")
-                        start_study = WebDriverWait(driver, 20).until(
-                            EC.element_to_be_clickable(
-                                (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+                        try:
+                            start_study = WebDriverWait(driver, 20).until(
+                                EC.element_to_be_clickable(
+                                    (By.XPATH, '//div[contains(text(), "开始学习") or contains(text(), "继续学习")]')
+                                )
                             )
-                        )
-                        print(f"开始学习元素是否出现': {start_study.is_displayed()},是否可以点击: {start_study.is_enabled()}")
-                        driver.execute_script("arguments[0].scrollIntoView(true);", start_study)   #元素滚动到可视区域顶部
-                        time.sleep(1)  # 确保元素可见
-                        driver.execute_script("arguments[0].click();", start_study)
-                        time.sleep(sleep_time + 100)
-                        random_wait()
-                        driver.close()
-                        driver.switch_to.window(driver.window_handles[-1])
-                        random_wait()
+                            driver.execute_script("arguments[0].scrollIntoView(true);", start_study)  # 元素滚动到可视区域顶部
+                            time.sleep(1)  # 确保元素可见
+                            driver.execute_script("arguments[0].click();", start_study)
+                            time.sleep(sleep_time + 100)
+                            random_wait()
+                            driver.close()
+                            driver.switch_to.window(driver.window_handles[-1])
+                            random_wait()
+                        except Exception as e:
+                            log_error(f"点击 '开始学习' 按钮失败: {e}")
+                            # 尝试刷新页面
+                            print("尝试刷新页面并重新尝试...")
+                            driver.refresh()
+                            time.sleep(5)  # 等待页面刷新
+                            driver.execute_script("arguments[0].scrollIntoView(true);", start_study)  # 再次滚动到元素
+                            driver.execute_script("arguments[0].click();", start_study)  # 再次点击
+                            time.sleep(sleep_time + 100)
+                            random_wait()
+
                     print(f'{study_name}学习完毕，开始学习下一个专题')
                 except Exception as e:
                     log_error(e)
