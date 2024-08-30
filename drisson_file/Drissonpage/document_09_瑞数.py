@@ -123,14 +123,14 @@ for pages in range(1,11):
     max_retries = 3  # 最大重试次数
     for attempt in range(max_retries):
         response = requests.post(url=url, headers=headers, data=data)
-        if response.status_code == 200:
-            break  # 成功获取响应，跳出重试循环
-        else:
+        if response.status_code != 200:
             page.refresh()  # 刷新页面
             browser_cookies = page.cookies(as_dict=True)  # 更新cookies
             headers[
                 'Cookie'] = f"VIP9lLgDcAL2T={browser_cookies['VIP9lLgDcAL2T']}; VIP9lLgDcAL2S={browser_cookies['VIP9lLgDcAL2S']};"
             print(f"重试第 {attempt + 1} 次，当前页面: {pages}")
+        else:
+            break
     else:
         # 如果达到最大重试次数，仍然无法成功获取响应，跳过该页
         print(f"第 {pages} 页请求失败，跳过。")

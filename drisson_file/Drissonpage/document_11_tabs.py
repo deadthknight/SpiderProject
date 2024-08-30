@@ -34,9 +34,18 @@
 
 
 #动作链
-from DrissionPage import ChromiumPage
+# from DrissionPage import ChromiumPage
+# from loguru import logger
+# page = ChromiumPage()
+# page.get('https://www.baidu.com')
+# page.actions.move_to('#kw').click().type('天气')
+# page.actions.move_to('#su').click()
+from loguru import logger
 
-page = ChromiumPage()
-page.get('https://www.baidu.com')
-page.actions.move_to('#kw').click().type('天气')
-page.actions.move_to('#su').click()
+#pip install data-recorder
+# 存储文件
+@logger.catch
+def divide(a, b):
+    return a / b
+
+divide(10, 0)  # 发生异常时，loguru 会自动记录异常信息
