@@ -100,7 +100,7 @@ page = WebPage('d', chromium_options=co)
 page.get('http://beijing.chinatax.gov.cn/bjsat/office/jsp/zdsswfaj/wwquery.jsp', retry=3, interval=2, timeout=15)
 # print('======>cookies', page.cookies(as_dict=True))
 browser_cookies = page.cookies(as_dict=True)
-print('======>VIP9lLgDcAL2T', browser_cookies['VIP9lLgDcAL2T'])
+# print('======>VIP9lLgDcAL2T', browser_cookies['VIP9lLgDcAL2T'])
 # print('======>VIP9lLgDcAL2S',browser_cookies['VIP9lLgDcAL2S'])   #瑞数反爬
 # page.refresh()
 # browser_cookies = page.cookies(as_dict=True)
@@ -115,24 +115,33 @@ for pages in range(1,11):
             "bz": "dq",
             "dq":"东城",
             "dqy": f"{pages}"}
-    response = requests.post(url=url,headers=headers,data=data)  #cookies 会失效
-    print(response.status_code)
-    for i in range(3):
+    # response = requests.post(url=url,headers=headers,data=data)  #cookies 会失效
+    # for key, value in response.request.headers.items():      #不是发送全部cookies
+    #     print(f"{key}: {value}")
+    # print(response.status_code)
+    # print(page.cookies())
+    max_retries = 3  # 最大重试次数
+    for attempt in range(max_retries):
         response = requests.post(url=url, headers=headers, data=data)
-        print('状态码',response.status_code)
-        if response.status_code != 200:
-            page.refresh()
-            browser_cookies = page.cookies(as_dict=True)
-            headers['Cookie'] = f"VIP9lLgDcAL2T={browser_cookies['VIP9lLgDcAL2T']}; VIP9lLgDcAL2S={browser_cookies['VIP9lLgDcAL2S']};"
-            continue
+        if response.status_code == 200:
+            break  # 成功获取响应，跳出重试循环
         else:
-            break
-    print(f'第{pages}页')
+            page.refresh()  # 刷新页面
+            browser_cookies = page.cookies(as_dict=True)  # 更新cookies
+            headers[
+                'Cookie'] = f"VIP9lLgDcAL2T={browser_cookies['VIP9lLgDcAL2T']}; VIP9lLgDcAL2S={browser_cookies['VIP9lLgDcAL2S']};"
+            print(f"重试第 {attempt + 1} 次，当前页面: {pages}")
+    else:
+        # 如果达到最大重试次数，仍然无法成功获取响应，跳过该页
+        print(f"第 {pages} 页请求失败，跳过。")
+        continue
+
+    print(f'第 {pages} 页')
     tree = etree.HTML(response.text)
     tr_list = tree.xpath('//tbody//td/table[2]//tr')[:-1]
     for tr in tr_list:
         area = tr.xpath('./td[1]/text()')[0]
         company = tr.xpath('./td[2]/text()')[0]
         problem = tr.xpath('./td[4]/text()')[0]
-        print(area,company,problem)
+        print(area, company, problem)
 
