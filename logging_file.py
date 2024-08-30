@@ -51,17 +51,24 @@ logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
 #=====================================================================================
 # 如果想要把日志记录在不同的文件中
 
-# 创建一个操作日志的对象logger（依赖FileHandler）
-file_handler = logging.FileHandler('l1.log', 'a', encoding='utf-8')  # f = open()
-file_handler.setFormatter(logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s"))
+# # 创建一个操作日志的对象logger（依赖FileHandler）
+# file_handler = logging.FileHandler('l1.log', 'a', encoding='utf-8')  # f = open()
+# file_handler.setFormatter(logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s"))
+#
+# logger1 = logging.Logger('财务系统', level=40)  # 创建日志对象
+# logger1.addHandler(file_handler)  # 给日志对象设置文件信息
+#
+#
+# # 再创建一个操作日志的对象logger（依赖FileHandler）
+# file_handler2 = logging.FileHandler('l2.log', 'a', encoding='utf-8')
+# file_handler2.setFormatter(logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s"))
+#
+# logger2 = logging.Logger('会计系统', level=40)
+# logger2.addHandler(file_handler2)
 
-logger1 = logging.Logger('财务系统', level=40)  # 创建日志对象
-logger1.addHandler(file_handler)  # 给日志对象设置文件信息
 
+from loguru import logger
 
-# 再创建一个操作日志的对象logger（依赖FileHandler）
-file_handler2 = logging.FileHandler('l2.log', 'a', encoding='utf-8')
-file_handler2.setFormatter(logging.Formatter(fmt="%(asctime)s - %(name)s - %(levelname)s -%(module)s:  %(message)s"))
+logger.add("file.log", format="{time} {level} {message}")
 
-logger2 = logging.Logger('会计系统', level=40)
-logger2.addHandler(file_handler2)
+logger.info("This message has a custom format")
