@@ -10,7 +10,10 @@ co.incognito(True)  # 无痕模式
 co.set_pref('credentials_enable_service', False)
 # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
 co.set_argument('--hide-crash-restore-bubble')
-page = ChromiumPage()
+# 指定端口
+co.set_local_port(9211)
+#设置UA 默认是
+page = ChromiumPage(co)
 
 # page.set.window.max() # 使窗口最大化。
 # from TimePinner import Pinner  # 导入计时工具
@@ -49,8 +52,8 @@ print(f'==============================\n'
       f'请求头:{page.user_agent}\n'
       f'是否正在加载：{page.states.ready_state}')
       # f'cookies:{page.cookies(as_dict=False)}')
-page('x://input[@id="kw"]').input('Drissionpage')  #找到输入框 输入Drissionpage
-page.ele('x://input[@id="su"]').click()   #点击按钮
-page.wait.load_start()   #等待页面加载
-
-print('Page Title:', page('x:/html/head/title').text)
+# page('x://input[@id="kw"]').input('Drissionpage')  #找到输入框 输入Drissionpage
+# page.ele('x://input[@id="su"]').click()   #点击按钮
+# page.wait.load_start()   #等待页面加载
+#
+# print('Page Title:', page('x:/html/head/title').text)
