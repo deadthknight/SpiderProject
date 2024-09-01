@@ -6,7 +6,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 co = ChromiumOptions()
 co.headless(False)  # 不使用无头模式
 co.incognito(True)  # 使用无痕模式
-
+co.set_argument('--start-maximized')
 page = ChromiumPage(co)
 # page.listen.start()
 # page.get(
