@@ -1,36 +1,42 @@
 const CryptoJS = require('crypto-js');
-// var hh = 'http://ggzy.zwfwb.tj.gov.cn:80/jyxxcggg/1157403.jhtml'
+var hh = 'http://ggzy.zwfwb.tj.gov.cn:80/jyxxcggg/1157403.jhtml'
 // function req(hh){
-//     var aa = hh.split("/");
-//     var aaa = aa.length;
-//     var bbb = aa[aaa - 1].split('.');
-//     var ccc = bbb[0];
-//     var cccc = bbb[1];
-//     var r = /^\+?[1-9][0-9]*$/;
-//     var s = 'qnbyzzwmdgghmcnm'
-//     if (r.test(ccc) && cccc.indexOf('jhtml') != -1) {
-//         var srcs = CryptoJS.enc.Utf8.parse(ccc);
-//         var k = CryptoJS.enc.Utf8.parse(s);
-//         var en = CryptoJS.AES.encrypt(srcs, k, {
-//             mode: CryptoJS.mode.ECB,
-//             padding: CryptoJS.pad.Pkcs7
-//         });
-//         var ddd = en.toString();
-//         ddd = ddd.replace(/\//g, "^");
-//         ddd = ddd.substring(0, ddd.length - 2);
-//         var bbbb = ddd + '.' + bbb[1];
-//         aa[aaa - 1] = bbbb;
-//         var uuu = '';
-//         for (i = 0; i < aaa; i++) {
-//             uuu += aa[i] + '/'
-//         }
-//         uuu = uuu.substring(0, uuu.length - 1);
-//     }
-//     // console.log("uuu",uuu)
-//     return uuu}
+var aa = hh.split("/");
+var aaa = aa.length;
+var bbb = aa[aaa - 1].split('.');
+var ccc = bbb[0];
+var cccc = bbb[1];
+var r = /^\+?[1-9][0-9]*$/;
+var s = 'qnbyzzwmdgghmcnm'
+if (r.test(ccc) && cccc.indexOf('jhtml') != -1) {
+    var srcs = CryptoJS.enc.Utf8.parse(ccc);
+    var k = CryptoJS.enc.Utf8.parse(s);
+    var en = CryptoJS.AES.encrypt(srcs, k, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    var ddd = en.toString();
+    ddd = ddd.replace(/\//g, "^");
+    ddd = ddd.substring(0, ddd.length - 2);
+    var bbbb = ddd + '.' + bbb[1];
+    aa[aaa - 1] = bbbb;
+    var uuu = '';
+    for (i = 0; i < aaa; i++) {
+        uuu += aa[i] + '/'
+    }
+    uuu = uuu.substring(0, uuu.length - 1);
+}
+    // // console.log("uuu",uuu)
+    // return uuu}
 //
 //
 // console.log(req('http://ggzy.zwfwb.tj.gov.cn:80/jyxxcggg/1157403.jhtml'))
+console.log(srcs)
+// { words: [ 825308471, 875574016 ], sigBytes: 7 }
+console.log(CryptoJS.enc.Utf8.stringify(srcs))     // 解密srcs  1157403
+
+console.log(CryptoJS.lib.WordArray.create([ 825308471, 875574016 ]).toString(CryptoJS.enc.Utf8))    // 解密srcs  1157403
+// ==============================================================================
 console.log("url:", 'http://ggzy.zwfwb.tj.gov.cn:80/jyxxcggg/1157403.jhtml');
 function req(hh) {
     // 第一步：分割 URL
