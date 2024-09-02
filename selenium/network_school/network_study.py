@@ -10,18 +10,16 @@ import time
 import ddddocr
 import random
 import json
-import logging
+from loguru import logger
+import traceback
 
-# 设置日志记录配置
-logging.basicConfig(filename='error_log.txt', level=logging.ERROR,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
-
+# 设置 loguru 日志记录配置 每个日志文件的大小将限制在 10 MB。当文件大小超过 10 MB 时，loguru 会自动创建一个新的日志文件，并在文件名中添加时间戳或序号，以区分不同的日志文件。
+logger.add('error_log.txt', level='ERROR', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}', rotation='10 MB')
+logger.add('info_log.txt', level='INFO', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}')
 
 def log_error(e):
-    """记录错误日志"""
-    logging.error(f"Error occurred: {e}")
-
+    """记录错误日志并输出异常详细信息"""
+    logger.error(f"Exception occurred: {traceback.format_exc()}")
 
 # 读取配置文件
 with open('config.json', 'r') as file:
@@ -30,11 +28,9 @@ with open('config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
-
 def random_wait(min_time=1, max_time=3):
     """生成随机等待时间"""
     time.sleep(random.uniform(min_time, max_time))
-
 
 def calculate_time(original_value, percentage_str):
     """计算给定百分比减少后的值"""
@@ -42,12 +38,12 @@ def calculate_time(original_value, percentage_str):
     decreased_value = int(original_value * (1 - percentage)) * 60
     return max(decreased_value, 60)  # 设置最小等待时间为60秒
 
-
 ocr = ddddocr.DdddOcr()
 
 # 创建一个Chrome选项对象
 chrome_options = Options()
 chrome_options.add_argument('--ignore-certificate-errors')
+chrome_options.add_argument('--mute-audio')  # 静音所有标签页
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
 chrome_options.add_argument(f'user-agent={user_agent}')
@@ -88,10 +84,10 @@ try:
             alert = driver.switch_to.alert
             random_wait()
             alert.accept()
-            print('验证码错误，重新获取验证码...')
+            logger.error('验证码错误，重新获取验证码...')
             random_wait()
         except Exception:
-            print('登录尝试完成')
+            logger.info('登录成功')
             break
 
     # 登录状态检查并进入学员中心
@@ -114,19 +110,19 @@ try:
         elements = driver.find_elements(By.XPATH, '//div[@class="join_special_list"]')
 
         if current_index >= len(elements):
-            print('全部课程学习完毕')
+            logger.info('全部课程学习完毕')
             break
 
         # 处理当前专题班
         while current_index < len(elements):
             element = elements[current_index]
             study_name = element.find_element(By.XPATH, './/*[@class="join_course_name"]').text
-            print(f'学习第{current_index + 1}个专题{study_name}')
+            logger.info(f'学习第{current_index + 1}个专题{study_name}')
             study_status = element.find_elements(By.XPATH, './/*[@class="join_status"]')
             study_in_element = element.find_element(By.XPATH, './/img')
             last_join_status = study_status[-1]
             if last_join_status.text == '未结业':
-                print(f'开始学习=====>{study_name}')
+                logger.info(f'开始学习=====>{study_name}')
                 driver.execute_script("arguments[0].scrollIntoView();", study_in_element)
                 random_wait()
                 study_in_element.click()
@@ -137,7 +133,7 @@ try:
                     for lesson in lessons:
                         learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
                         learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
-                        logging.info(f"Processing lesson with learning process: {learning_process.text}")
+                        logger.info(f"Processing lesson with learning process: {learning_process.text}")
                         learning_time = int(learning_time.text.strip().split(' ')[0])
                         sleep_time = calculate_time(learning_time, learning_process.text)
                         if learning_process.text == '100.0%':
@@ -145,8 +141,7 @@ try:
                         click_study = lesson.find_element(By.XPATH, './/a[contains(text(), "我要学习")]')
                         click_study.click()
                         driver.switch_to.window(driver.window_handles[-1])
-                        # 等待并点击“开始学习”按钮
-                        print("尝试点击 '开始学习' .....")
+                        logger.info("尝试点击 '开始学习' .....")
                         try:
                             start_study = WebDriverWait(driver, 20).until(
                                 EC.element_to_be_clickable(
@@ -163,8 +158,7 @@ try:
                             random_wait()
                         except Exception as e:
                             log_error(f"点击 '开始学习' 按钮失败: {e}")
-                            # 尝试刷新页面
-                            print("尝试刷新页面并重新尝试...")
+                            logger.info("尝试刷新页面并重新尝试...")
                             driver.refresh()
                             time.sleep(5)  # 等待页面刷新
                             driver.execute_script("arguments[0].scrollIntoView(true);", start_study)  # 再次滚动到元素
@@ -172,10 +166,9 @@ try:
                             time.sleep(sleep_time + 100)
                             random_wait()
 
-                    print(f'{study_name}学习完毕，开始学习下一个专题')
+                    logger.info(f'{study_name}学习完毕，开始学习下一个专题')
                 except Exception as e:
                     log_error(e)
-                    print(f"Error processing lesson in {study_name}, skipping to next.")
                 finally:
                     driver.back()
                     WebDriverWait(driver, 10).until(
@@ -185,13 +178,13 @@ try:
                     current_index += 1
                     break
             else:
-                print(f'{study_name}已结业')
+                logger.info(f'{study_name}已结业')
                 current_index += 1
 
 except Exception as e:
     log_error(e)
 finally:
-    print('关闭浏览器')
+    logger.info('关闭浏览器')
     driver.quit()
 
 if __name__ == "__main__":
