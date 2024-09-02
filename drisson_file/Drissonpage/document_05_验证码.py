@@ -1,6 +1,7 @@
 from DrissionPage import ChromiumPage, ChromiumOptions
 import ddddocr
 import json
+from loguru import logger
 # 读取配置文件
 with open('../../selenium/network_school/config.json', 'r') as file:
     config = json.load(file)
@@ -10,12 +11,21 @@ with open('../../selenium/network_school/config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
+
+def calculate_time(original_value, percentage_str):
+    """计算给定百分比减少后的值"""
+    percentage = float(percentage_str.strip('%')) / 100
+    decreased_value = int(original_value * (1 - percentage)) * 60
+    return max(decreased_value, 60)  # 设置最小等待时间为60秒
+
 co = ChromiumOptions()
 # co.set_browser_path()  #浏览器地址，默认是chrome
 co.headless(False)   # 无头模式
 co.incognito(True)  # 无痕模式
 co.set_pref('credentials_enable_service', True)  # 阻止“自动保存密码”的提示气泡
 co.set_argument('--hide-crash-restore-bubble')   # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
+co.set_argument('--start-maximized')
+co.mute(True)
 page = ChromiumPage(co)
 # page.set.auto_handle_alert(all_tabs=True)  # 这之后出现的弹窗都会自动确认
 #===========================================================
@@ -32,17 +42,30 @@ while True:
     page('.login_btn').click()
     # txt = page.handle_alert()              # 确认提示框并获取提示框文本
     # print(txt)
-    print("点击登录按钮，等待处理...")  # 调试信息
+    logger.info("登录...")  # 调试信息
 
     alert_text = page.handle_alert(timeout=3)
     if alert_text:  # 如果有弹窗信息
-        print(f"弹窗信息: {alert_text}")
+        logger.info(f"弹窗信息: {alert_text}")
         if "验证码错误" in alert_text:
-            print("验证码错误，重新尝试")
+            logger.error("验证码错误，重新尝试")
             continue  # 处理验证码错误，重新尝试
     else:  # 没有弹窗信息 会返回False 不能用try。。except
-        print('登录成功')
+        logger.info('登录成功')
         break
+page('进入学员中心').click.for_new_tab()    #点击进入新页面
+logger.info('进入学员中心')
+new_tab = page('进入学员中心').click.for_new_tab()
+sepcial_list = new_tab.eles('.join_special_list')
+for course in sepcial_list:
+    if course('已结业'):
+        study_name = course(".join_course_name").text
+        logger.info(f'专题{study_name}已结业')
+    else:
+        course('进入学习').click()
+        new_tab1 = course('进入学习').click.for_new_tab()
+
+
 
 #     try:
 #         alert_text = page.handle_alert(timeout=5)  # 等待弹窗出现
