@@ -46,7 +46,7 @@ while True:
 
     alert_text = page.handle_alert(timeout=3)
     if alert_text:  # 如果有弹窗信息
-        logger.info(f"弹窗信息: {alert_text}")
+        # logger.info(f"弹窗信息: {alert_text}")
         if "验证码错误" in alert_text:
             logger.error("验证码错误，重新尝试")
             continue  # 处理验证码错误，重新尝试
@@ -60,9 +60,9 @@ while True:
     for course in sepcial_list:
         study_name = course(".join_course_name").text
         if course('已结业'):
-            logger.info(f'专题{study_name}已结业')
+            logger.info(f'专题《{study_name}》已结业')
             continue  # 已结业的专题，跳过
-        logger.info(f'专题{study_name}===》开始学习')
+        logger.info(f'专题《{study_name}》===》开始学习')
         course('进入学习').click()
         # new_tab1 = course('进入学习').click.for_new_tab(by_js=True)
         lessons = new_tab_1.eles('.hoz_course_row')
@@ -78,7 +78,7 @@ while True:
             new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
             new_tab_2.wait(sleep_time+100)
             new_tab_2.close()  # 关闭新窗口
-        logger.info(f'专题{study_name}已学习完毕')
+        logger.info(f'专题《{study_name}》已学习完毕')
         new_tab_1.back()  # 关闭新窗口
         new_tab_1.refresh()
         break
