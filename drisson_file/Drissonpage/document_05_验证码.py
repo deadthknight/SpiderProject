@@ -53,17 +53,38 @@ while True:
     else:  # 没有弹窗信息 会返回False 不能用try。。except
         logger.info('登录成功')
         break
-page('进入学员中心').click.for_new_tab()    #点击进入新页面
+new_tab_1 = page('进入学员中心').click.for_new_tab()    #点击进入新页面
 logger.info('进入学员中心')
-new_tab = page('进入学员中心').click.for_new_tab()
-sepcial_list = new_tab.eles('.join_special_list')
-for course in sepcial_list:
-    if course('已结业'):
+while True:
+    sepcial_list = new_tab_1.eles('.join_special_list')
+    for course in sepcial_list:
         study_name = course(".join_course_name").text
-        logger.info(f'专题{study_name}已结业')
-    else:
+        if course('已结业'):
+            logger.info(f'专题{study_name}已结业')
+            continue  # 已结业的专题，跳过
+        logger.info(f'专题{study_name}===》开始学习')
         course('进入学习').click()
-        new_tab1 = course('进入学习').click.for_new_tab()
+        # new_tab1 = course('进入学习').click.for_new_tab(by_js=True)
+        lessons = new_tab_1.eles('.hoz_course_row')
+        for lesson in lessons:
+            learning_process = lesson('.h_pro_percent').text
+            # logger.info(f"学习进程：{learning_process}")
+            learning_time = int(lesson('.hoz_four_info').text.strip().split(' ')[0])
+            # logger.info(f'{learning_time},{learning_process}')
+            sleep_time = calculate_time(learning_time, learning_process)
+            if learning_process == '100.0%':
+                continue
+            new_tab_2 = new_tab_1('我要学习').click.for_new_tab(by_js=True)
+            new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
+            new_tab_2.wait(sleep_time+100)
+            new_tab_2.close()  # 关闭新窗口
+        logger.info(f'专题{study_name}已学习完毕')
+        new_tab_1.back()  # 关闭新窗口
+        new_tab_1.refresh()
+        break
+    logger.info(f'全部专题已学习完毕')
+    break
+page.quit()
 
 
 
