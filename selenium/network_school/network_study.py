@@ -133,7 +133,7 @@ try:
                     for lesson in lessons:
                         learning_process = lesson.find_element(By.XPATH, './/span[@class="h_pro_percent"]')
                         learning_time = lesson.find_element(By.XPATH, './/p[@class="hoz_four_info"]/span')
-                        logger.info(f"Processing lesson with learning process: {learning_process.text}")
+                        # logger.info(f"学习进度: {learning_process.text}")
                         learning_time = int(learning_time.text.strip().split(' ')[0])
                         sleep_time = calculate_time(learning_time, learning_process.text)
                         if learning_process.text == '100.0%':
