@@ -25,7 +25,7 @@ def calculate_time(original_value, percentage_str):
 co = ChromiumOptions()
 co.headless(False)  # 无头模式
 # co.incognito(True)  # 无痕模式
-co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
+# co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
 co.set_pref('credentials_enable_service', True)  # 阻止“自动保存密码”的提示气泡
 co.set_argument('--hide-crash-restore-bubble')  # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
 co.set_argument('--start-maximized')
@@ -35,12 +35,13 @@ page = ChromiumPage(co)
 
 # 打开网站并登录
 page.get('https://www.samrela.com/')
+page('#username').clear()
 page('#username').input(username)  # 输入用户名
+page('#pwd').clear()
 page('#pwd').input(password)  # 输入密码
-
+ocr = ddddocr.DdddOcr()  # 创建 OCR 对象 在循环里面，每次都会创建一个 对象。移到循环外，以减少资源消耗
 while True:
     img_bytes = page('#codeImg').src()  # 获取验证码图片字节
-    ocr = ddddocr.DdddOcr()  # 创建 OCR 对象
     yzm = ocr.classification(img_bytes)  # 识别验证码
     page('#yzm').clear()
     page('#yzm').input(yzm)
@@ -89,6 +90,7 @@ while True:
                     new_tab_2.wait(1,3)
                     new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
                     new_tab_2.wait(sleep_time + 100)
+                    logger.info(f'尝试关闭窗口，页面标题为: {new_tab_2.title}')
                     new_tab_2.close()  # 关闭新窗口
                 except Exception as e:
                     logger.error(f'课程《{lesson.text}》学习过程中出现错误: {e}')
@@ -99,7 +101,8 @@ while True:
             logger.info(f'专题《{study_name}》已学习完毕')
             new_tab_1.back()  # 返回上一页
             new_tab_1.refresh()  # 刷新页面
-            break  # 处理完一个专题后跳出循环
+            # break  # 处理完一个专题后跳出循环
+            processed_specials.add(study_name)  # 标记为已处理
     except Exception as e:
         logger.error(f'处理专题时出现错误: {e}')
         new_tab_1.refresh()  # 如果出现错误，刷新页面并继续
