@@ -14,8 +14,8 @@ from loguru import logger
 import traceback
 
 # 设置 loguru 日志记录配置 每个日志文件的大小将限制在 10 MB。当文件大小超过 10 MB 时，loguru 会自动创建一个新的日志文件，并在文件名中添加时间戳或序号，以区分不同的日志文件。
-logger.add('error_log.txt', level='ERROR', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}', rotation='10 MB')
-logger.add('info_log.txt', level='INFO', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}')
+logger.add('error_log_chen.txt', level='ERROR', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}', rotation='10 MB')
+logger.add('info_log_chen.txt', level='INFO', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}')
 
 def log_error(e):
     """记录错误日志并输出异常详细信息"""
@@ -25,10 +25,10 @@ def log_error(e):
 with open('config.json', 'r') as file:
     config = json.load(file)
 
-username = config['username']
-password = config['password']
+username = config['username_chen']
+password = config['password_chen']
 
-def random_wait(min_time=1, max_time=3):
+def random_wait(min_time=2, max_time=5):
     """生成随机等待时间"""
     time.sleep(random.uniform(min_time, max_time))
 
@@ -53,7 +53,7 @@ driver = webdriver.Chrome(options=chrome_options,
                           service=Service(r'F:\Python\tool\chromedriver-win64\chromedriver.exe'))
 try:
     driver.maximize_window()
-
+    logger.info("====================开始学习=======================")
     # 第一次访问目标网站
     driver.get('https://www.samrela.com/')
     driver.implicitly_wait(5)
@@ -62,7 +62,7 @@ try:
     username_input = driver.find_element(By.ID, 'username')
     password_input = driver.find_element(By.ID, 'pwd')
     captcha_input = driver.find_element(By.ID, 'yzm')
-
+    logger.info("登录中。。。")
     username_input.send_keys(username)
     random_wait()
     password_input.send_keys(password)
