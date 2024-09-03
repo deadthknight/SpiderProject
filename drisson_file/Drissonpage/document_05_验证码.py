@@ -81,9 +81,10 @@ while True:
                     sleep_time = calculate_time(learning_time, learning_process)
 
                     if learning_process == '100.0%':
-                        continue
+                        break
 
                     new_tab_2 = new_tab_1('我要学习').click.for_new_tab(by_js=True)
+                    new_tab_2.wait(1,3)
                     new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
                     new_tab_2.wait(sleep_time + 100)
                     new_tab_2.close()  # 关闭新窗口
