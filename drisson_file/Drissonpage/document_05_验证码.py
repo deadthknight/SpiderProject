@@ -2,6 +2,7 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 import ddddocr
 import json
 from loguru import logger
+
 # 读取配置文件
 with open('../../selenium/network_school/config.json', 'r') as file:
     config = json.load(file)
@@ -11,6 +12,9 @@ with open('../../selenium/network_school/config.json', 'r') as file:
 username = config['username']
 password = config['password']
 
+# 设置 loguru 日志记录配置
+logger.add('error_log.txt', level='ERROR', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}', rotation='10 MB')
+# logger.add('info_log.txt', level='INFO', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}')
 
 def calculate_time(original_value, percentage_str):
     """计算给定百分比减少后的值"""
@@ -19,52 +23,95 @@ def calculate_time(original_value, percentage_str):
     return max(decreased_value, 60)  # 设置最小等待时间为60秒
 
 co = ChromiumOptions()
-# co.set_browser_path()  #浏览器地址，默认是chrome
-co.headless(False)   # 无头模式
-co.incognito(True)  # 无痕模式
+co.headless(False)  # 无头模式
+# co.incognito(True)  # 无痕模式
+# co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
 co.set_pref('credentials_enable_service', True)  # 阻止“自动保存密码”的提示气泡
-co.set_argument('--hide-crash-restore-bubble')   # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
+co.set_argument('--hide-crash-restore-bubble')  # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
 co.set_argument('--start-maximized')
 co.mute(True)
+# co.no_imgs(True) 验证码也加载不了
 page = ChromiumPage(co)
-# page.set.auto_handle_alert(all_tabs=True)  # 这之后出现的弹窗都会自动确认
-#===========================================================
-page.get('https://www.samrela.com/')
 
-page('#username').input(username)        #输入用户名
-page('#pwd').input(password)             #输入密码
+# 打开网站并登录
+page.get('https://www.samrela.com/')
+page('#username').clear()
+page('#username').input(username)  # 输入用户名
+page('#pwd').clear()
+page('#pwd').input(password)  # 输入密码
+ocr = ddddocr.DdddOcr()  # 创建 OCR 对象 在循环里面，每次都会创建一个 对象。移到循环外，以减少资源消耗
 while True:
-    img_bytes = page('#codeImg').src()             #拿到图片字节
-    ocr = ddddocr.DdddOcr()                  #创建对象
-    yzm = ocr.classification(img_bytes)
+    img_bytes = page('#codeImg').src()  # 获取验证码图片字节
+    yzm = ocr.classification(img_bytes)  # 识别验证码
     page('#yzm').clear()
     page('#yzm').input(yzm)
     page('.login_btn').click()
-    # txt = page.handle_alert()              # 确认提示框并获取提示框文本
-    # print(txt)
-    logger.info("登录...")  # 调试信息
+    logger.info("登录中...")
 
     alert_text = page.handle_alert(timeout=3)
     if alert_text:  # 如果有弹窗信息
-        logger.info(f"弹窗信息: {alert_text}")
         if "验证码错误" in alert_text:
             logger.error("验证码错误，重新尝试")
             continue  # 处理验证码错误，重新尝试
-    else:  # 没有弹窗信息 会返回False 不能用try。。except
+    else:
         logger.info('登录成功')
         break
-page('进入学员中心').click.for_new_tab()    #点击进入新页面
-logger.info('进入学员中心')
-new_tab = page('进入学员中心').click.for_new_tab()
-sepcial_list = new_tab.eles('.join_special_list')
-for course in sepcial_list:
-    if course('已结业'):
-        study_name = course(".join_course_name").text
-        logger.info(f'专题{study_name}已结业')
-    else:
-        course('进入学习').click()
-        new_tab1 = course('进入学习').click.for_new_tab()
 
+new_tab_1 = page('进入学员中心').click.for_new_tab()  # 点击进入新页面
+
+processed_specials = set()  # 用于存储已处理的专题名称
+
+while True:
+    try:
+        special_list = new_tab_1.eles('.join_special_list')
+        for course in special_list:
+            study_name = course(".join_course_name").text
+            if study_name in processed_specials:  # 如果专题已处理过，跳过
+                continue
+            if course('已结业'):
+                logger.info(f'专题《{study_name}》已结业')
+                processed_specials.add(study_name)  # 标记为已处理
+                continue  # 已结业的专题，跳过
+            logger.info(f'专题《{study_name}》===》开始学习')
+
+            course('进入学习').click()
+            lessons = new_tab_1.eles('.hoz_course_row')
+
+            for lesson in lessons:
+                try:
+                    learning_process = lesson('.h_pro_percent').text
+                    learning_time = int(lesson('.hoz_four_info').text.strip().split(' ')[0])
+                    sleep_time = calculate_time(learning_time, learning_process)
+
+                    if learning_process == '100.0%':
+                        break
+
+                    new_tab_2 = new_tab_1('我要学习').click.for_new_tab(by_js=True)
+                    new_tab_2.wait(1,3)
+                    new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
+                    new_tab_2.wait(sleep_time + 100)
+                    logger.info(f'尝试关闭窗口，页面标题为: {new_tab_2.title}')
+                    new_tab_2.close()  # 关闭新窗口
+                except Exception as e:
+                    logger.error(f'课程《{lesson.text}》学习过程中出现错误: {e}')
+                    if new_tab_2.exists:
+                        new_tab_2.close()  # 关闭新窗口
+                    continue  # 继续处理下一个课程
+
+            logger.info(f'专题《{study_name}》已学习完毕')
+            new_tab_1.back()  # 返回上一页
+            new_tab_1.refresh()  # 刷新页面
+            # break  # 处理完一个专题后跳出循环
+            processed_specials.add(study_name)  # 标记为已处理
+    except Exception as e:
+        logger.error(f'处理专题时出现错误: {e}')
+        new_tab_1.refresh()  # 如果出现错误，刷新页面并继续
+        continue
+
+    logger.info('全部专题已学习完毕')
+    break
+
+page.quit()  # 退出浏览器
 
 
 #     try:
