@@ -27,7 +27,7 @@ def calculate_time(original_value, percentage_str):
 co = ChromiumOptions()
 co.headless(False)  # 无头模式
 co.incognito(True)  # 无痕模式
-co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
+# co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
 co.set_pref('credentials_enable_service', True)  # 阻止“自动保存密码”的提示气泡
 co.set_argument('--hide-crash-restore-bubble')  # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
 co.set_argument('--start-maximized')
@@ -91,7 +91,7 @@ while True:
                         processed_lessons.add(lesson_name)
                         continue
                     if lesson_name in processed_lessons:
-                        logger.info(f'<{lesson_name}>已学习，下一个')
+                        logger.info(f'《{lesson_name}》已学习，下一个')
                         continue
                     new_tab_2 = new_tab_1('我要学习').click.for_new_tab(by_js=True)
                     new_tab_2.wait(3,5)
@@ -104,7 +104,7 @@ while True:
                     logger.info(f'已添加至完成列表')
                     new_tab_2.close()  # 关闭新窗口
                     logger.info(f'已关闭')
-                    # new_tab_1.refresh()
+                    new_tab_1.refresh()
                 except Exception as e:
                     logger.error(f'课程《{lesson.text}》学习过程中出现错误: {e}')
                     if new_tab_2.exists:
