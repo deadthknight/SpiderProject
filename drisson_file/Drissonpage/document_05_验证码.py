@@ -24,11 +24,13 @@ def calculate_time(original_value, percentage_str):
 
 co = ChromiumOptions()
 co.headless(False)  # 无头模式
-co.incognito(True)  # 无痕模式
+# co.incognito(True)  # 无痕模式
+co.set_browser_path(r'C:\Program Files (x86)\Microsoft\Edge Dev\Application\129.0.2792.10\msedge.exe')   # edge 运行
 co.set_pref('credentials_enable_service', True)  # 阻止“自动保存密码”的提示气泡
 co.set_argument('--hide-crash-restore-bubble')  # 阻止“要恢复页面吗？Chrome未正确关闭”的提示气泡
 co.set_argument('--start-maximized')
 co.mute(True)
+# co.no_imgs(True) 验证码也加载不了
 page = ChromiumPage(co)
 
 # 打开网站并登录
