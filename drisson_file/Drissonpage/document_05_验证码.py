@@ -54,13 +54,18 @@ while True:
         logger.info('登录成功')
         break
 new_tab_1 = page('进入学员中心').click.for_new_tab()    #点击进入新页面
-logger.info('进入学员中心')
+
+processed_specials = set()  # 用于存储已处理的专题名称
+
 while True:
     sepcial_list = new_tab_1.eles('.join_special_list')
     for course in sepcial_list:
         study_name = course(".join_course_name").text
+        if study_name in processed_specials:  # 如果专题已处理过，跳过
+            continue
         if course('已结业'):
             logger.info(f'专题《{study_name}》已结业')
+            processed_specials.add(study_name)  # 标记为已处理
             continue  # 已结业的专题，跳过
         logger.info(f'专题《{study_name}》===》开始学习')
         course('进入学习').click()
