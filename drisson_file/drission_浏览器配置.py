@@ -8,6 +8,7 @@ co.set_argument('--hide-crash-restore-bubble')  # 阻止“要恢复页面吗？
 co.set_argument('--start-maximized')   # 设置启动时最大化
 co.auto_port(True)   # 自动使用可用的端口
 co.mute(True)    # 方法用于设置是否静音
+
 # co.ignore_certificate_errors()   # 该方法用于设置是否忽略证书错误。可以解决访问网页时出现的“您的连接不是私密连接”、“你的连接不是专用连接”等问题。
 # co.set_local_port(9211)    # 指定端口
 # co.set_user_agent(user_agent='Mozilla/5.0 (Macintos.....')   # 设置UA
@@ -27,8 +28,8 @@ print(f'==============================\n'
       f'返回窗口当前状态：{page.rect.window_state}')
       # f'cookies:{page.cookies(as_dict=False)}')
 # page.get_screenshot(path='./截图',name='百度',full_page=True) #截图
-page.get('https://tls.browserleaks.com/json')
-page.get_screenshot(path='./截图',name='无头',full_page=True) #截图
+# page.get('https://tls.browserleaks.com/json')
+# page.get_screenshot(path='./截图',name='无头',full_page=True) #截图
 # page.quit()
 
 
