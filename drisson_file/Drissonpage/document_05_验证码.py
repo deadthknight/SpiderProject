@@ -97,7 +97,6 @@ while True:
             course('进入学习').click()
             new_tab_1.wait.load_start()
             lessons = new_tab_1.eles('.hoz_course_row')
-            print(lessons)
             processed_lessons = set()  #存储已处理的课程
             for lesson in lessons:
                 new_tab_2 = None
