@@ -11,8 +11,8 @@ with open('../selenium/network_school/config.json', 'r') as file:
 # import os
 # config_path = os.path.abspath('../../selenium/network_school/config.json')
 # print("Resolved Path:", config_path)               #确认文件
-username = config['username_chen']
-password = config['password_chen']
+username = config['username']
+password = config['password']
 
 # 设置 loguru 日志记录配置
 # logger.add('error_log.txt', level='ERROR', format='{time:YYYY-MM-DD HH:mm:ss} - {level} - {message}', rotation='10 MB')

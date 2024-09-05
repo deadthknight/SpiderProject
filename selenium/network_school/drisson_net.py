@@ -61,7 +61,7 @@ nums = len(special_list)
 try:
     for num in range(nums):
         # print(special_list[num]('.join_course_name').text)
-
+        special_list = new_tab_1.eles('.join_special_list')
         study_name = special_list[num]('.join_course_name').text
         course = special_list[num]
         if course('已结业'):
