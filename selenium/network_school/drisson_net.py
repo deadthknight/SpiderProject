@@ -93,21 +93,41 @@ try:
             logger.info(f'专题《{study_name}》已结业')
             continue
         logger.info(f'专题《{study_name}》===》开始学习')
-        new_tab_2 = course('进入学习').click.for_new_tab()
-        lessons = new_tab_2.eles('.hoz_course_row')
+        course('进入学习').click()
+        lessons = new_tab_1.eles('.hoz_course_row')
         lessons_nums = len(lessons)
         processed_lessons = set()
         for x in range(lessons_nums):# 存储已处理的课程
             lesson = lessons[x]
-            logger.info(lesson('.hoz_course_name').text)
-        logger.info(f"{study_name}学完")
-        new_tab_2.back()
-
-
-    logger.info('Done')
+            lesson_name = lesson('.hoz_course_name').text
+            learning_process = lesson('.h_pro_percent').text
+            learning_time = int(lesson('.hoz_four_info').text.strip().split(' ')[0])
+            sleep_time = calculate_time(learning_time, learning_process)
+            if learning_process == '100.0%':
+                processed_lessons.add(lesson_name)
+                continue
+            if lesson_name in processed_lessons:
+                logger.info(f'《{lesson_name}》已学习，下一个')
+                continue
+            new_tab_2 = lesson('我要学习').click.for_new_tab(by_js=True)
+            new_tab_2.wait(3, 5)
+            new_tab_2('@|tx()=继续学习@|tx()=开始学习').click()
+            logger.info(f'《{new_tab_2.title}》学习中。。。')
+            time.sleep(sleep_time + 100)
+            logger.info(f'《{new_tab_2.title}》学习完毕')
+            processed_lessons.add(lesson_name)
+            logger.info(f'已添加至完成列表')
+            new_tab_2.close()  # 关闭新窗口
+            logger.info(f'已关闭')
+        logger.info(f'专题《{study_name}》已学习完毕')
+        new_tab_1.back()
+    logger.info('全部专题已学完。。。')
 except Exception as e:
     logger.error(f'专题《{study_name}》出现错误: {e}')
     logger.error('堆栈跟踪信息:\n' + traceback.format_exc())
+finally:
+    logger.info('关闭浏览器')
+    page.quit()
 
 
 
