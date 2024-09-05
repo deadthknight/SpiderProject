@@ -118,7 +118,7 @@ try:
             processed_lessons.add(lesson_name)
             logger.info(f'已添加至完成列表')
             new_tab_2.close()  # 关闭新窗口
-            logger.info(f'已关闭')
+            logger.info(f'已关闭,开始下一个。。。')
         logger.info(f'专题《{study_name}》已学习完毕')
         new_tab_1.back()
     logger.info('全部专题已学完。。。')
