@@ -1,3 +1,4 @@
+import ddddocr
 from DrissionPage import ChromiumPage, ChromiumOptions
 from DrissionPage.common import wait_until
 import json
@@ -44,19 +45,43 @@ page('#username').clear()
 page('#username').input(username)  # 输入用户名
 page('#pwd').clear()
 page('#pwd').input(password)  # 输入密码
+ocr = ddddocr.DdddOcr()  # 创建 OCR 对象 在循环里面，每次都会创建一个 对象。移到循环外，以减少资源消耗
+max_attempts = 5  # 最大尝试次数
+attempts = 0
 
-yzm = input()
-page('#yzm').input(yzm)
-page('.login_btn').click()
+while attempts < max_attempts:
+    img_bytes = page('#codeImg').src()  # 获取验证码图片字节
+    yzm = ocr.classification(img_bytes)  # 识别验证码
+    page('#yzm').clear()
+    page('#yzm').input(yzm)
+    page('.login_btn').click()
+    logger.info("登录中...")
 
+    alert_text = page.handle_alert(timeout=3)
+    # logger.info(f'错误信息==={alert_text}')
+
+    if alert_text:  # 如果有弹窗信息
+        if "验证码错误" in alert_text:
+            logger.error("验证码错误，重新尝试")
+            attempts += 1
+            time.sleep(2)  # 等待2秒后重试
+            continue
+        elif '用户名或密码错误' in alert_text:
+            logger.error('用户名或密码错误')
+            page.quit()  # 立即退出浏览器
+            raise SystemExit  # 退出程序
+    else:
+        logger.info('登录成功')
+        break
+
+if attempts >= max_attempts:
+    logger.error('超过最大尝试次数，登录失败')
+    page.quit()
+    raise SystemExit
 
 new_tab_1 = page('进入学员中心').click.for_new_tab()  # 点击进入新页面
-
-
-processed_specials = set()  # 用于存储已处理的专题名称
-
+# processed_specials = set()  # 用于存储已处理的专题名称
 special_list = new_tab_1.eles('.join_special_list')
-
 nums = len(special_list)
 try:
     for num in range(nums):
