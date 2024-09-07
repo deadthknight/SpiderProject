@@ -10,22 +10,27 @@ div_list = page.eles('tag:div')  # 获取所有div元素
 div3 = page.eles('@!name="row1"')
 #
 # print(div1.text)
-print('test========================================')
-test = page('第一行').attr('name')   #文本是第一行的name的属性
-print(test)
-print('test1=======================================')
-test1 = page('@@class=p_cls@@name=row2').text            #属性class=p_cls和name=row2
-print(test1)
-print('test2=======================================')
-test2 = page(('@@class=p_cls@!name=row1')).text          #class=p_cls且name不等于row1
-print(test2)
-print('test3=======================================')
-test3 = page.eles(('@|class=p_cls4@|id=two'))            #class=p_cls或者id=two
-for x in test3:
-    print(x.text)
-print('test4=======================================')
-test4 = page('.$4').text                                #class以4结尾
-print(test4)
+# print('test========================================')
+# test = page('第一行').attr('name')   #文本是第一行的name的属性
+# print(test)
+# print('test1=======================================')
+# test1 = page('@@class=p_cls@@name=row2').text            #属性class=p_cls和name=row2
+# print(test1)
+# print('test2=======================================')
+# test2 = page(('@@class=p_cls@!name=row1')).text          #class=p_cls且name不等于row1
+# print(test2)
+# print('test3=======================================')
+# test3 = page.eles(('@|class=p_cls4@|id=two'))            #class=p_cls或者id=two
+# for x in test3:
+#     print(x.text)
+# print('test4=======================================')
+# test4 = page('.$4').text                                #class以4结尾
+# print(test4)
+print('test5=======================================')
+test5 = page.eles('@|tx()=第一行@|tx()=第二行')
+print(test5)
+for x in test5:
+    print(x.attr('id'))
 # print('==============')
 # print(p1.text)
 # print('==============')

@@ -1,11 +1,16 @@
-# from DrissionPage import ChromiumPage
-#
-# page = ChromiumPage()
-# page.get('https://www.baidu.com')
-# page.new_tab('https://www.baidu.com')
-#
-# tabs = page.get_tabs(url='baidu.com')
-# print(tabs)
+from DrissionPage import ChromiumPage
+
+page = ChromiumPage()
+page.get('https://www.baidu.com')
+page.new_tab('https://www.sohu.com')
+page.new_tab('https://www.163.com/')
+
+tab = page.get_tab(1)
+tab2 = page.get_tab(2)
+tab3 = page.get_tab(3)
+print(tab.title)
+print(tab2.title)
+print(tab3.title)
 
 # from DrissionPage import ChromiumPage
 #
@@ -44,8 +49,9 @@ from loguru import logger
 
 #pip install data-recorder
 # 存储文件
-@logger.catch
-def divide(a, b):
-    return a / b
+# @logger.catch
+# def divide(a, b):
+#     return a / b
+#
+# divide(10, 0)  # 发生异常时，loguru 会自动记录异常信息
 
-divide(10, 0)  # 发生异常时，loguru 会自动记录异常信息

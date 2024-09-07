@@ -120,8 +120,8 @@ while True:
                     logger.info(f'《{new_tab_2.title}》学习完毕')
                     processed_lessons.add(lesson_name)
                     logger.info(f'已添加至完成列表')
-                    # new_tab_2.close()  # 关闭新窗口
-                    # logger.info(f'已关闭')
+                    new_tab_2.close()  # 关闭新窗口
+                    logger.info(f'已关闭')
                     # new_tab_1.refresh()   # 不刷新，已学的还是会排在上面。导致同一视频反复学习。
                     # logger.info(f'已刷新')
                     # wait_until(lambda: new_tab_1.eles('.hoz_course_row'))

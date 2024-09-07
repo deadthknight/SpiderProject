@@ -4,6 +4,7 @@ import requests
 from lxml import etree
 import chardet
 from readheader import readheaders
+from loguru import logger
 from pprint import pprint
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -42,14 +43,24 @@ for tr in tr_list:
            '下载链接':download_url}
     movies.append(dic)
 # pprint(movies)
+# 构建字典并添加到列表中
+
+# 搜索和打印
 if movie_name:
-    for x in movies:
-        for key,value in x.items():
-            if movie_name in x['电影名称']:
-                print(key,value)
+    matched_movies = [x for x in movies if movie_name in x['电影名称']]  # 找到匹配的电影
+    if matched_movies:  # 如果找到了匹配的电影
+        for movie in matched_movies:
+            print(f"电影名称: {movie['电影名称']}\n下载链接: {movie['下载链接']}")
+            logger.info(f"电影名称: {movie['电影名称']}\n下载链接: {movie['下载链接']}")
+    else:  # 如果没有找到匹配的电影
+        print("未找到匹配的电影")
+        for movie in movies:
+            logger.info(movie['电影名称'])
 else:
-    for dic in movies:
-            print(dic['电影名称'])
+    # 没有输入名字时，打印所有电影名称
+    for movie in movies:
+        logger.info(movie['电影名称'])
+
     # 调用selenium 点击下载链接
     # wd = webdriver.Chrome()
     # wd.get(url)
