@@ -128,6 +128,3 @@ except Exception as e:
 finally:
     logger.info('关闭浏览器')
     page.quit()
-
-
-
