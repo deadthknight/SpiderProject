@@ -10,6 +10,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 
+movie_name = input('输入关键字：')
 headers = readheaders('./header_code.txt')
 url = 'https://dygod.org/index.htm'
 # url = 'https://dytt.dytt8.net/index.htm'
@@ -17,7 +18,7 @@ url = 'https://dygod.org/index.htm'
 response = requests.get(url=url, headers=headers)
 response.encoding = chardet.detect(response.content)['encoding']
 tree = etree.HTML(response.text)
-tr_list = tree.xpath('(//div[@class="bd3rl"])[1]/div[2]//div[2]//tr[position()>1 and position()<=8]')
+tr_list = tree.xpath('(//div[@class="bd3rl"])[1]/div[2]//div[2]//tr[position()>1 and position()<=11]')
 # print(len(tr_list))
 name_list = []
 download_list = []
@@ -40,8 +41,15 @@ for tr in tr_list:
            '链接地址':movie_url,
            '下载链接':download_url}
     movies.append(dic)
-pprint(movies)
-
+# pprint(movies)
+if movie_name:
+    for x in movies:
+        for key,value in x.items():
+            if movie_name in x['电影名称']:
+                print(key,value)
+else:
+    for dic in movies:
+            print(dic['电影名称'])
     # 调用selenium 点击下载链接
     # wd = webdriver.Chrome()
     # wd.get(url)
