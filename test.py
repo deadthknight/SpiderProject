@@ -92,28 +92,56 @@
 # lst = ['1']
 # str = ''.join(lst)
 # print(str)
+# import time
+# n = 11
+# for i in range(n):
+#     if i == 0:
+#         print("[" + '=' * i + ' ' * (n - i-1) + "]", end='\r')
+#         time.sleep(0.5)
+#     print("["+'=' * i + '>' + ' '*(n-i-1) + "]",end='\r')
+#     time.sleep(0.5)
 
-str1 = '2.37%'
-str2 = 37
+
+import time
+# import sys
+# n = 11
+# for i in range(n):
+#     if i == 0:
+#         print("[" + ' ' * (n - 1) + "]", end='\r')  # 初始化进度条的起始状态
+#         # sys.stdout.flush()  # 加上延迟效果以观察变化
+#     print("[" + '=' * i + '>' + ' ' * (n - i - 1) + "]", end='\r')
+#     # sys.stdout.flush()
+#     # time.sleep(0.5)  # 加上延迟效果让进度条慢慢更新
+# import time
+# import sys
+#
+# n = 11
+# for i in range(n):
+#     if i == 0:
+#         print("[" + ' ' * (n - 1) + "]", end='\r')  # 初始化进度条的起始状态
+#         sys.stdout.flush()  # 手动刷新输出缓冲区
+#
+#     print("[" + '=' * i + '>' + ' ' * (n - i - 1) + "]", end='\r')
+#     sys.stdout.flush()  # 手动刷新输出缓冲区
+#     time.sleep(0.5)  # 延迟0.5秒，模拟进度更新
+#
+# print()  # 在最后添加换行以保持终端输出整洁
+import time
+import sys
+
+def print_progress_bar(iteration, total, bar_length=50):
+    percent = ("{0:.1f}".format(100 * (iteration / float(total))))
+    filled_length = int(bar_length * iteration // total)
+    bar = '=' * filled_length + '>' + ' ' * (bar_length - filled_length - 1)
+    sys.stdout.write(f'\r[{bar}] {percent}% Complete')
+    sys.stdout.flush()
+
+n = 11  # 进度条总长度
+
+for i in range(n + 1):
+    print_progress_bar(i, n)
+    time.sleep(0.5)  # 模拟进度更新的延迟
+
+print("\nDone")  # 结束时换行，确保“Done”显示在新的一行
 
 
-def calculate_time(original_value, percentage_str):
-    """
-    计算给定百分比减少后的值。
-
-    参数:
-    original_value (float 或 int): 原始值
-    percentage_str (str): 百分比字符串，格式如 '2.37%'
-
-    返回:
-    float: 减少后的值
-    """
-    # 提取百分比数字并转换为浮点数
-    percentage = float(percentage_str.strip('%')) / 100
-
-    # 计算减少后的值
-    decreased_value = int(original_value * (1 - percentage))*60
-
-    return decreased_value
-
-print(calculate_time(str2,str1))
