@@ -60,7 +60,7 @@ def get_w_rid(wts, pagination_str):
     # print(pagination_str)
     l = [
         "mode=3",
-        "oid=113114305594915",
+        "oid=1255942505",
         f"pagination_str={pagination_str}",
         "plat=1",
         "seek_rpid=",
@@ -80,7 +80,7 @@ def get_w_rid(wts, pagination_str):
 
 def get_source_page(url, pagination_str):
     w_rid = get_w_rid(wts, pagination_str)
-    params = {"oid": "113114305594915",
+    params = {"oid": "1255942505",
               "type": "1",
               "mode": "3",
               "pagination_str": f'{{"offset":{pagination_str}}}',
@@ -92,9 +92,12 @@ def get_source_page(url, pagination_str):
     # print(params)
     response = requests.get(url=url, headers=headers, cookies=cookies, params=params)
     data = response.json()
-    nextpage = data['data']['cursor']['pagination_reply']['next_offset']
-    nextpage_parmas = json.dumps(nextpage)  # 字符串转换为字典
-    return data,nextpage_parmas
+    try:
+        nextpage = data['data']['cursor']['pagination_reply']['next_offset']
+        nextpage_parmas = json.dumps(nextpage)  # 字符串转换为字典
+        return data,nextpage_parmas
+    except KeyError as e:
+        return None, None
 
 
 def parse_data(data):
@@ -131,7 +134,10 @@ if __name__ == '__main__':
     parmas = '""'
     for x in range(5):
         data,parmas = get_source_page(url,pagination_str=parmas)
-        page_comment = parse_data(data)
-        list1.extend(page_comment)
+        if data:
+            page_comment = parse_data(data)
+            list1.extend(page_comment)
+        else:
+            break
     for i in list1:
         print(i)
