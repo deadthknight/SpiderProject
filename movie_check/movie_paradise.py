@@ -5,11 +5,7 @@ from lxml import etree
 import chardet
 from readheader import readheaders
 from loguru import logger
-from pprint import pprint
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-import time
+
 
 movie_name = input('输入关键字：')
 headers = readheaders('./header_code.txt')
