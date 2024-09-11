@@ -50,18 +50,17 @@ wts = int(time.time())
 
 from urllib.parse import quote
 
-pagination_str = '""'
+# pagination_str = '""'
 
 
 def get_w_rid(wts, pagination_str):
     a = 'ea1db124af3c7062474693fa704f4ff8'
-
     pagination_str = quote(f'{{"offset":{pagination_str}}}')
-    print(pagination_str)
+    # print(pagination_str)
     l = [
         "mode=3",
         "oid=113114305594915",
-        f"pagination_str= {pagination_str}",
+        f"pagination_str={pagination_str}",
         "plat=1",
         "seek_rpid=",
         "type=1",
@@ -70,29 +69,31 @@ def get_w_rid(wts, pagination_str):
     ]
     y = '&'.join(l)
     string = y + a
-    print(l)
+    # print(l)
     # print(y)
     MD5 = hashlib.md5()
     MD5.update(string.encode('utf-8'))
     w_rid = MD5.hexdigest()
     return w_rid
-get_w_rid(wts,pagination_str)
+
 
 def get_source_page(url, pagination_str):
     w_rid = get_w_rid(wts, pagination_str)
     params = {"oid": "113114305594915",
               "type": "1",
               "mode": "3",
-              "pagination_str": f'{pagination_str}',
+              "pagination_str": f'{{"offset":{pagination_str}}}',
               "plat": "1",
               "seek_rpid": '',
               "web_location": "1315875",
               "w_rid": w_rid,
               "wts": wts}
+    # print(params)
     response = requests.get(url=url, headers=headers, cookies=cookies, params=params)
     data = response.json()
+    # print(data)
     nextpage = data['data']['cursor']['pagination_reply']['next_offset']
-    nextpage_parmas = json.dumps(nextpage)
+    nextpage_parmas = json.dumps(nextpage)  # 字符串转换为字典
 
     return data,nextpage_parmas
 
@@ -112,18 +113,25 @@ def parse_data(data):
         total.append(dic)
     return total
 
+#
+# def main(url,params):
+#     data,parmas = get_source_page(url,params)
+#     page_comment = parse_data(data)
+#     return page_comment
 
-def main(url,params):
-    data,nextpage_parmas = get_source_page(url,params)
-    page_comment = parse_data(data)
-    print(page_comment)
-    params = nextpage_parmas
+
 
 
 
 if __name__ == '__main__':
     url = 'https://api.bilibili.com/x/v2/reply/wbi/main'
-    # params = '{"offset":""}'
-    # main(url,params)
+    # main(url,'""')
     # for x in range(5):
     #     main(x,params)
+    params = '""'
+    list1 = []
+    for x in range(5):
+        data,parmas = get_source_page(url,params)
+        page_comment = parse_data(data)
+        list1.extend(page_comment)
+    print(len(list1))
