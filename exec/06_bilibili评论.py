@@ -31,20 +31,21 @@ cookies = {
     'hit-dyn-v2': '1',
     'buvid_fp_plain': 'undefined',
     'buvid4': '50E17A7D-533E-9F58-59BB-51E9D575850217985-024060312-d1kKipACZEBAnJ%2FkykWItg%3D%3D',
-    'fingerprint': 'f7a5c2aff4d77f79ac67ec5f434805d7',
-    'buvid_fp': 'f7a5c2aff4d77f79ac67ec5f434805d7',
     'CURRENT_QUALITY': '80',
-    'SESSDATA': '9aa74e6f%2C1741350309%2C2b2ec%2A91CjAFBaJ9-IYWbr9hQ-lb1W0QZJSc-rcw-q8r31aWoq13Kq01_D_AgFp0SkTUB9UCgkUSVlFOUTFMbnpzeF93WHhGY2FvWmV0ekdVTjNkQzY1Q2t0VEFsdjVmNHdlUDR2eV9iTjhocFl0X0ZEVlBPaWtSNndDeVNNUlYyQjlJQnBCNW5hR0htT2N3IIEC',
-    'bili_jct': 'a4c4ef3ae5514423920bcbce10a27b41',
-    'home_feed_column': '5',
-    'sid': '89qo3pho',
     'CURRENT_FNVAL': '4048',
-    'bp_t_offset_290041701': '975197974101491712',
-    'b_lsid': 'F77813FF_191DC36E8D9',
-    'browser_resolution': '1920-875',
     'bili_ticket': 'eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjYyMzcxMTMsImlhdCI6MTcyNTk3Nzg1MywicGx0IjotMX0.vRu0jrVxts27p8ly95fRCBCO17DQ3I9WTYYbe91FCP4',
     'bili_ticket_expires': '1726237053',
+    'fingerprint': 'c32a4b8711ecf7f2cdb678fd5ed0e262',
+    'buvid_fp': 'c32a4b8711ecf7f2cdb678fd5ed0e262',
+    'home_feed_column': '5',
+    'browser_resolution': '1920-970',
+    'SESSDATA': 'f6719299%2C1741610194%2Cef807%2A91CjDJlOQt0XSTvx3GFy-Ty_uZILB7FZNn79QpQNGmpkUbu6WEQ7YnHuRpToLU55deQocSVlZ6REhtby1ZX0oxMjhNcnRuZGdHSy1lSnd4QXAyQnJ6RDRwbHFPNll3RmIxa3B6anM1TUhFQnFOZUtWcXZjd0lWdWI5UzluQ1JrSk1yamVXNC1tR253IIEC',
+    'bili_jct': '0cc379a57bd523dbd7567cfec319bb52',
+    'sid': '85jopfcu',
+    'bp_t_offset_290041701': '975928921700696064',
+    'b_lsid': '1053F1F104_191E181CC7C',
 }
+
 
 wts = int(time.time())
 
@@ -91,20 +92,21 @@ def get_source_page(url, pagination_str):
     # print(params)
     response = requests.get(url=url, headers=headers, cookies=cookies, params=params)
     data = response.json()
-    # print(data)
     nextpage = data['data']['cursor']['pagination_reply']['next_offset']
     nextpage_parmas = json.dumps(nextpage)  # 字符串转换为字典
-
     return data,nextpage_parmas
 
 
 def parse_data(data):
     total = []
     reply_list = data['data']["replies"]
-    reply_top = data['data']['top']
-    dic_top = {'昵称': reply_top["upper"]['member']['uname'],
-               'comment': reply_top["upper"]['content']['message']}
-    total.append(dic_top)
+    try:
+        reply_top = data['data']['top']
+        dic_top = {'昵称': reply_top["upper"]['member']['uname'],
+                   'comment': reply_top["upper"]['content']['message']}
+        total.append(dic_top)
+    except Exception as e:
+        print(f'Error: {e}')
     for reply in reply_list:
         dic = {
             "昵称": reply['member']['uname'],
@@ -124,14 +126,12 @@ def parse_data(data):
 
 
 if __name__ == '__main__':
-    url = 'https://api.bilibili.com/x/v2/reply/wbi/main'
-    # main(url,'""')
-    # for x in range(5):
-    #     main(x,params)
-    params = '""'
+    url = 'https://api.bilibili.com/x/v2/reply/wbi/main?'
     list1 = []
+    parmas = '""'
     for x in range(5):
-        data,parmas = get_source_page(url,params)
+        data,parmas = get_source_page(url,pagination_str=parmas)
         page_comment = parse_data(data)
         list1.extend(page_comment)
-    print(len(list1))
+    for i in list1:
+        print(i)
