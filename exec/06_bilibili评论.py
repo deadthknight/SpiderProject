@@ -1,20 +1,21 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
 import time
-
 import requests
 import csv
+import hashlib
+import json
+
 # 创建csv
-f = open(file='comment.csv', mode='w',encoding='utf-8',newline='')  #创建文件
+f = open(file='comment.csv', mode='w', encoding='utf-8', newline='')  # 创建文件
 # 字典写入
 csv_writer = csv.DictWriter(f, fieldnames=['昵称', 'comment'])
 # 写入表头
-csv_writer.writeheader() 
+csv_writer.writeheader()
 
 headers = {
     'origin': 'https://www.bilibili.com',
-    'referer': 'https://www.bilibili.com/video/BV1NopHe9Eaw/?spm_id_from=333.337.search-card.all.click&vd_source=30cafa8600362cdbc4203bf0b5bb2903',
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
 }
 
 cookies = {
@@ -45,41 +46,84 @@ cookies = {
     'bili_ticket_expires': '1726237053',
 }
 
+wts = int(time.time())
 
-wts = int(time.time())*1000   #时间戳
+from urllib.parse import quote
 
-o = 'ea1db124af3c7062474693fa704f4ff8'
-
-params = {"oid": "113109373030327",
-          "type": "1",
-          "mode": "3",
-          "pagination_str": '{"offset":""}',
-          "plat": "1",
-          "seek_rpid": '',
-          "web_location": "1315875",
-          "w_rid": "4b02c771880af912f50c6f29e0d0d085",
-          "wts": '1725981085'}
+pagination_str = '""'
 
 
-def get_source_page(url):
-    response = requests.get(url=url,headers=headers,cookies=cookies,params=params)
-    print(response.status_code)
-    return response.json()
+def get_w_rid(wts, pagination_str):
+    a = 'ea1db124af3c7062474693fa704f4ff8'
 
-def main(url):
-    res = get_source_page(url)
-    list1 = []
-    reply_list = res['data']["replies"]
+    pagination_str = quote(f'{{"offset":{pagination_str}}}')
+    print(pagination_str)
+    l = [
+        "mode=3",
+        "oid=113114305594915",
+        f"pagination_str= {pagination_str}",
+        "plat=1",
+        "seek_rpid=",
+        "type=1",
+        "web_location=1315875",
+        f"wts={wts}"
+    ]
+    y = '&'.join(l)
+    string = y + a
+    print(l)
+    # print(y)
+    MD5 = hashlib.md5()
+    MD5.update(string.encode('utf-8'))
+    w_rid = MD5.hexdigest()
+    return w_rid
+get_w_rid(wts,pagination_str)
+
+def get_source_page(url, pagination_str):
+    w_rid = get_w_rid(wts, pagination_str)
+    params = {"oid": "113114305594915",
+              "type": "1",
+              "mode": "3",
+              "pagination_str": f'{pagination_str}',
+              "plat": "1",
+              "seek_rpid": '',
+              "web_location": "1315875",
+              "w_rid": w_rid,
+              "wts": wts}
+    response = requests.get(url=url, headers=headers, cookies=cookies, params=params)
+    data = response.json()
+    nextpage = data['data']['cursor']['pagination_reply']['next_offset']
+    nextpage_parmas = json.dumps(nextpage)
+
+    return data,nextpage_parmas
+
+
+def parse_data(data):
+    total = []
+    reply_list = data['data']["replies"]
+    reply_top = data['data']['top']
+    dic_top = {'昵称': reply_top["upper"]['member']['uname'],
+               'comment': reply_top["upper"]['content']['message']}
+    total.append(dic_top)
     for reply in reply_list:
         dic = {
-               "昵称": reply['member']['uname'],
-               "comment":reply['content']['message']
+            "昵称": reply['member']['uname'],
+            "comment": reply['content']['message']
         }
-        print(dic)
-        # csv_writer.writerow(dic)
+        total.append(dic)
+    return total
+
+
+def main(url,params):
+    data,nextpage_parmas = get_source_page(url,params)
+    page_comment = parse_data(data)
+    print(page_comment)
+    params = nextpage_parmas
+
 
 
 if __name__ == '__main__':
     url = 'https://api.bilibili.com/x/v2/reply/wbi/main'
-    main(url)
-
+    # params = '{"offset":""}'
+    # main(url,params)
+    # for x in range(5):
+    #     main(x,params)
