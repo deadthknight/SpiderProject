@@ -46,7 +46,6 @@ if movie_name:
     matched_movies = [x for x in movies if movie_name in x['电影名称']]  # 找到匹配的电影
     if matched_movies:  # 如果找到了匹配的电影
         for movie in matched_movies:
-            print(f"电影名称: {movie['电影名称']}\n下载链接: {movie['下载链接']}")
             logger.info(f"电影名称: {movie['电影名称']}\n下载链接: {movie['下载链接']}")
     else:  # 如果没有找到匹配的电影
         print("未找到匹配的电影")
