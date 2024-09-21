@@ -45,7 +45,7 @@ page('#username').clear()
 page('#username').input(username)  # 输入用户名
 page('#pwd').clear()
 page('#pwd').input(password)  # 输入密码
-ocr = ddddocr.DdddOcr()  # 创建 OCR 对象 在循环里面，每次都会创建一个 对象。移到循环外，以减少资源消耗
+ocr = ddddocr.DdddOcr(show_ad=False)  # 创建 OCR 对象 在循环里面，每次都会创建一个 对象。移到循环外，以减少资源消耗
 max_attempts = 5  # 最大尝试次数
 attempts = 0
 

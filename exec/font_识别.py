@@ -1,5 +1,8 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
+from fontTools.ttLib import TTFont
+from PIL import ImageFont, ImageDraw
+
 def read_num_by_draw(woff_font):
     """
     绘制图片通过ddddocr库进行图片识别
