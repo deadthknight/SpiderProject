@@ -1,7 +1,8 @@
-# ！usr/bin/env Python3.11
-# -*-coding:utf-8 -*-
 from fontTools.ttLib import TTFont
-from PIL import ImageFont, ImageDraw
+from PIL import ImageFont, ImageDraw, Image
+from io import BytesIO
+import ddddocr  # 确保已安装并导入 ddddocr
+
 
 def read_num_by_draw(woff_font):
     """
@@ -9,33 +10,32 @@ def read_num_by_draw(woff_font):
     :param woff_font: 字体文件
     :return: 字体字典
     """
-    ttf_font = "font/font.ttf"
     img_size = 512
-    font = TTFont(woff_font)
-    font_img = ImageFont.truetype(ttf_font, img_size)
+    font = TTFont(woff_font)  # 这里传递字体文件路径
+    font_img = ImageFont.truetype(woff_font, img_size)  # 使用 woff 字体文件
     ocr = ddddocr.DdddOcr(show_ad=False)
-    font_dict = dict()
-    for cmap_code, glyph_name in font.getBestCmap().items():
+    font_dict = {}
 
+    for cmap_code, glyph_name in font.getBestCmap().items():
         # 实例化一个图片对象
         img = Image.new('1', (img_size, img_size), 255)
 
         # 绘制图片
         draw = ImageDraw.Draw(img)
-        # 将编码读取成字节
-        txt = chr(cmap_code)
+        txt = chr(cmap_code)  # 将编码读取成字符
 
-        x, y = draw.textsize(txt, font=font_img)
+        # 获取文本的边界框
+        bbox = draw.textbbox((0, 0), txt, font=font_img)
+        x = bbox[2] - bbox[0]  # 宽度
+        y = bbox[3] - bbox[1]  # 高度
 
         draw.text(((img_size - x) // 2, (img_size - y) // 2), txt, font=font_img, fill=0)
+
         bytes_io = BytesIO()
         img.save(bytes_io, format="PNG")
+
         # 识别字体
         word = ocr.classification(bytes_io.getvalue())
-        # print(cmap_code, glyph_name, word)
         font_dict[glyph_name.replace('uni', '&#x').lower()] = word
 
     return font_dict
-
-if __name__ == '__main__':
-    read_num_by_draw('www')
