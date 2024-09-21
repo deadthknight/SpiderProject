@@ -5,7 +5,7 @@ import json
 import traceback
 import time
 from loguru import logger
-# import ddddocr
+import ddddocr
 
 # 读取配置文件
 with open('../../selenium/network_school/config.json', 'r') as file:

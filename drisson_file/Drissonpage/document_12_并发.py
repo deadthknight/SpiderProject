@@ -36,5 +36,5 @@ for x in row_list:
     detail_all.append(detail)
     get_info(href)
 
-#     r.add_data(detail)  # 加入数据
-# r.record()
+    r.add_data(detail)  # 加入数据
+r.record()

@@ -28,4 +28,4 @@ for tr in tr_list:
            '下载链接':download_url}
     movies.append(dic)
 for movie in movies:
-    print(f"{movie['电影名称']}\n下载地址：{movie['下载链接']}")
+    print(f"{movie['电影名称']}")
