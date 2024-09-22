@@ -35,6 +35,15 @@ def download_font_file():
     logger.info('文件检查完')
     font_dic = read_num_by_draw(font_path)
     return font_dic
+def change_code(word,font_dic):
+    woed_decode=''
+    for num in word:
+        try:
+            word_real = font_dic['gid'+str(ord(num))]
+        except:
+            word_real = num
+        woed_decode += word_real
+    return woed_decode
 
 def get_source_page(url):
     params = {
@@ -55,7 +64,8 @@ def get_source_page(url):
         print(f"获取失败：{e}")
 
 
-def parse_pg_source(pg_source):
+def parse_pg_source(pg_source,font_dic):
+    font_dic = download_font_file()
     data = pg_source['data']['search_sh_sku_info_list']
     for x in data:
         # print(x)
@@ -65,24 +75,25 @@ def parse_pg_source(pg_source):
             '车型': x['series_name'],
             '城市 ': x['brand_source_city_name'],
             '年份': x['car_year'],
-            '价格': x['sh_price'],
-            '官方价格': x['official_price'],
-            '公里数': x['sub_title']
+            '价格': change_code(x['sh_price'],font_dic),
+            '官方价格': change_code(x['official_price'],font_dic),
+            '公里数': change_code(x['sub_title'],font_dic)
         }
-        for i in x['sh_price']:
-            print(i, ord(i))
+        # for i in x['sh_price']:
+        #     print(i, ord(i))
         pprint(dic)
         break
 
 
 def main():
     url = 'https://www.dongchedi.com/motor/pc/sh/sh_sku_list?'
+    font_dic = download_font_file()
     pg_source = get_source_page(url)
     # print(pg_source)
-    parse_pg_source(pg_source)
+    parse_pg_source(pg_source,font_dic)
 
 
 if __name__ == '__main__':
     # main()
-    font=download_font_file()
+    font = download_font_file()
     print(font)

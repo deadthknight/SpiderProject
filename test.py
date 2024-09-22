@@ -129,19 +129,27 @@ import time
 import time
 import sys
 
-def print_progress_bar(iteration, total, bar_length=50):
-    percent = ("{0:.1f}".format(100 * (iteration / float(total))))
-    filled_length = int(bar_length * iteration // total)
-    bar = '=' * filled_length + '>' + ' ' * (bar_length - filled_length - 1)
-    sys.stdout.write(f'\r[{bar}] {percent}% Complete')
-    sys.stdout.flush()
+# def print_progress_bar(iteration, total, bar_length=50):
+#     percent = ("{0:.1f}".format(100 * (iteration / float(total))))
+#     filled_length = int(bar_length * iteration // total)
+#     bar = '=' * filled_length + '>' + ' ' * (bar_length - filled_length - 1)
+#     sys.stdout.write(f'\r[{bar}] {percent}% Complete')
+#     sys.stdout.flush()
+#
+# n = 11  # 进度条总长度
+#
+# for i in range(n + 1):
+#     print_progress_bar(i, n)
+#     time.sleep(0.5)  # 模拟进度更新的延迟
+#
+# print("\nDone")  # 结束时换行，确保“Done”显示在新的一行
 
-n = 11  # 进度条总长度
+# ============================================================================
+# 码点（Code Point）是字符集中的一个唯一标识符，用于表示特定的字符。在Unicode标准中，码点是一个非负整数，
+# 每个字符对应一个唯一的码点。码点的格式通常表示为 U+XXXX，其中 XXXX 是一个十六进制数。例如：
+#
+# 字母“A”的码点是 U+0041
 
-for i in range(n + 1):
-    print_progress_bar(i, n)
-    time.sleep(0.5)  # 模拟进度更新的延迟
-
-print("\nDone")  # 结束时换行，确保“Done”显示在新的一行
-
-
+print(chr(0x0041))
+print(chr(65))
+print(ord('A'))
