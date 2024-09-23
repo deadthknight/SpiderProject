@@ -12,12 +12,11 @@ import json
 # 设置 matplotlib 后端为 'Agg'，用于在无 GUI 环境下生成图像
 matplotlib.use('Agg')
 
+
 # 日志配置
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 设置全局路径变量，增强代码的可移植性
-
-
 
 
 # 字体拆解，保存为单个字体图片，并保存在 imgs 文件夹中
@@ -40,25 +39,27 @@ def font_split_single_img(font_path):
         plt.axis('off')  # 禁用坐标轴
         os.makedirs('imgs', exist_ok=True)
         plt.savefig('./imgs/{0}.jpg'.format(d))
-        # plt.show()    # 显示
-        plt.clf()
-        plt.cla()
+        # # plt.show()    # 显示
+        # plt.clf()
+        # plt.cla()
         plt.close()
         index += 1
 
     logger.info("图片绘制完成")
-    # return IMG_DIR
+    logger.info()
+    return os.path.join('.','imgs')
+
 
 # 使用 ddddocr 识别拆解后的字体图片，并保存到 imgs_copy_word 文件夹
-def ocrWords(IMG_DIR):
+def ocrWords(img_dir):
     ocr = ddddocr.DdddOcr(beta=False, show_ad=False)  # 实例化 ddddocr 识别器
-    IMG_COPY_DIR = os.path.join('.', 'imgs_copy_word')
+    img_copy_dir = os.path.join('.', 'imgs_copy_word')
     word_map = {}
 
-    os.makedirs(IMG_COPY_DIR, exist_ok=True)  # 确保 imgs_copy_word 目录存在
+    os.makedirs(img_copy_dir, exist_ok=True)  # 确保 imgs_copy_word 目录存在
 
     # 遍历 imgs 文件夹中的所有图片
-    for parent, dirnames, filenames in os.walk(IMG_DIR):
+    for parent, dirnames, filenames in os.walk(img_dir):
         for filename in filenames:
             k = filename.split('.')[0]  # 提取文件名（不带扩展名）
             currentPath = os.path.join(parent, filename)
@@ -78,7 +79,7 @@ def ocrWords(IMG_DIR):
 
                 # 保存识别结果为新文件，命名为 {原文件名}__{识别结果}.jpg
                 new_filename = f'{k}__{res}.jpg'
-                img.save(os.path.join(IMG_COPY_DIR, new_filename))
+                img.save(os.path.join(img_copy_dir, new_filename))
 
                 word_map[k] = res
                 # logger.info(f"Processed {filename} -> {new_filename}")
@@ -86,7 +87,8 @@ def ocrWords(IMG_DIR):
                 logger.error(f"Error processing {filename}: {e}")
 
     logger.info('图片识别完毕')
-    return IMG_COPY_DIR
+    return os.path.join('.','img_copy_dir')
+
 
 # 读取识别后的图片名称，并将结果存储为字典，返回映射关系
 
@@ -107,12 +109,4 @@ def readImagName(imagesPath, saveJsonName='ocr_dddd.json'):
 
 if __name__ == "__main__":
     # 分解字体并生成图片
-    font_path = 'font/96fc7b50b772f52.woff2'
-    font_split_single_img(font_path)
-    # IMG_DIR= font_split_single_img('96fc7b50b772f52.woff2')
-    # IMG_COPY_DIR= ocrWords(IMG_DIR)
-    # # 识别图片中文字
-    # word_map = readImagName(IMG_COPY_DIR)
-
-    # 输出识别结果
-    # print(word_map)
+    font_split_single_img(font_path='./font/96fc7b50b772f52.woff2')
