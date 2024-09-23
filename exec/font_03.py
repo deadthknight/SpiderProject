@@ -16,38 +16,41 @@ matplotlib.use('Agg')
 # 日志配置
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 设置全局路径变量，增强代码的可移植性
-
-
 # 字体拆解，保存为单个字体图片，并保存在 imgs 文件夹中
+
 def font_split_single_img(font_path):
     # 解析字体文件
     font = TTFont(font_path)  # woff2文件
     cmap = font.getBestCmap()
-    # font.saveXML('font.xml')  # 保存存为xml
     index = 1
+
+    # 创建存放图像的文件夹
+    os.makedirs('imgs', exist_ok=True)
+
     for n, v in cmap.items():
         d = v
         glyph = font.getGlyphSet()[d]  # 通过字形名称选择某一字形对象
         pen = FreeTypePen(None)  # 实例化Pen子类
         glyph.draw(pen)  # “画”出字形轮廓
-        # pen.show()    # 显示
         b = pen.array()
-        # print(index, '/', len(cmap), '~~~', glyph)
-        plt.figure()
-        plt.imshow(b)
+
+        # 创建新的图像
+        plt.figure(figsize=(2, 2))  # 调整图像大小（这里是2x2英寸）
+        plt.imshow(b, cmap='gray_r')  # 设置黑色字形，白色背景
+        plt.gca().set_facecolor('white')  # 设置背景为白色
         plt.axis('off')  # 禁用坐标轴
-        os.makedirs('imgs', exist_ok=True)
-        plt.savefig('./imgs/{0}.jpg'.format(d))
-        # # plt.show()    # 显示
-        # plt.clf()
-        # plt.cla()
+
+        # 调整边距，防止字形占满整个图像
+        plt.subplots_adjust(left=0.2, right=0.8, top=0.8, bottom=0.2)
+
+        # 保存图片
+        plt.savefig(f'./imgs/{d}.jpg', bbox_inches='tight', pad_inches=0.1)  # 设置边框
         plt.close()
+
         index += 1
 
     logger.info("图片绘制完成")
-    logger.info()
-    return os.path.join('.','imgs')
+    return os.path.join('.', 'imgs')
 
 
 # 使用 ddddocr 识别拆解后的字体图片，并保存到 imgs_copy_word 文件夹
@@ -109,4 +112,13 @@ def readImagName(imagesPath, saveJsonName='ocr_dddd.json'):
 
 if __name__ == "__main__":
     # 分解字体并生成图片
-    font_split_single_img(font_path='./font/96fc7b50b772f52.woff2')
+    import time
+
+    starttime = time.time()  # 获取开始时间
+    img_dir= font_split_single_img(font_path='./font/96fc7b50b772f52.woff2')
+    imagesPath= ocrWords(img_dir)
+    word_map = readImagName('imgs_copy_word')
+    endtime = time.time()
+    # print(word_map)
+    elapsed_time = endtime - starttime  # 计算时间差
+    logger.info(elapsed_time)

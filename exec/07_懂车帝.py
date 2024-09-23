@@ -1,5 +1,7 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
+import json
+
 import requests
 from pprint import pprint
 from urllib.parse import urlparse
@@ -37,9 +39,7 @@ def change_code(word,font_dic):
     woed_decode=''
     for num in word:
         try:
-            word_real = font_dic['gid'+str(ord(num))]
-            if word_real == 'o':
-                word_real = '0'
+            word_real = font_dic[str(ord(num))]
         except:
             word_real = num
         woed_decode += word_real
@@ -52,9 +52,9 @@ def get_source_page(url):
     }
     data = {
         "": "",
-        "sh_city_name": "全国",
+        "sh_city_name": "北京",
         "page": "2",
-        "limit": "20"
+        "limit": "60"
     }
     try:
         response = requests.post(url=url, headers=headers, params=params, data=data)
@@ -88,13 +88,16 @@ def main():
     url = 'https://www.dongchedi.com/motor/pc/sh/sh_sku_list?'
     font_path = download_font_file()
 
-    img_dir=font_split_single_img(font_path)
-    img_copy_dir = ocrWords(img_dir)
-    input('确认识别后的文字')
-    word_map = readImagName(img_copy_dir)
+    # img_dir=font_split_single_img(font_path)
+    # img_copy_dir = ocrWords(img_dir)
+    # input('确认识别后的文字')
+    # word_map = readImagName(img_copy_dir)
+    with open('ocr_dddd.json', 'r', encoding='utf-8') as f:
+        word_map = json.load(f)  # 直接加载 JSON 数据
+    # print(word_map)
     pg_source = get_source_page(url)
     # print(pg_source)
-    parse_pg_source(pg_source,word_map)
+    parse_pg_source(pg_source, word_map)
 
 
 if __name__ == '__main__':
