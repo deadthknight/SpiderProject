@@ -22,37 +22,32 @@ matplotlib.use('Agg')
 
 # 字体拆解，保存为单个字体图片，并保存在 imgs 文件夹中
 def font_split_single_img(font_path):
-    # font_path = os.path.join(FONT_DIR, '96fc7b50b772f52.woff2')  # 读取字体文件路径
-    IMG_DIR = os.path.join('.', 'imgs')
-    try:
-        # 解析字体文件
-        font = TTFont(font_path)
-    except FileNotFoundError:
-        logger.error(f"Font file {font_path} not found.")
-        return
-
-    cmap = font.getBestCmap()  # 获取字体映射表
-    os.makedirs(IMG_DIR, exist_ok=True)  # 确保 imgs 目录存在
-
+    # 解析字体文件
+    font = TTFont(font_path)  # woff2文件
+    cmap = font.getBestCmap()
+    # font.saveXML('font.xml')  # 保存存为xml
     index = 1
-    pen = FreeTypePen(None)  # 实例化 Pen 类，避免重复创建
     for n, v in cmap.items():
-        glyph = font.getGlyphSet()[v]  # 获取字形对象
-        glyph.draw(pen)  # 绘制字形轮廓
-        b = pen.array()  # 获取字形轮廓的图像数组
-
-        # 使用 matplotlib 保存字形为图片
+        d = v
+        glyph = font.getGlyphSet()[d]  # 通过字形名称选择某一字形对象
+        pen = FreeTypePen(None)  # 实例化Pen子类
+        glyph.draw(pen)  # “画”出字形轮廓
+        # pen.show()    # 显示
+        b = pen.array()
+        # print(index, '/', len(cmap), '~~~', glyph)
         plt.figure()
         plt.imshow(b)
-        plt.axis('off')  # 隐藏坐标轴
-        plt.savefig(os.path.join(IMG_DIR, f'{v}.jpg'))  # 保存图片到 imgs 文件夹
+        plt.axis('off')  # 禁用坐标轴
+        os.makedirs('imgs', exist_ok=True)
+        plt.savefig('./imgs/{0}.jpg'.format(d))
+        # plt.show()    # 显示
+        plt.clf()
+        plt.cla()
         plt.close()
-
-        # logger.info(f"Processed glyph {index}/{len(cmap)}: {v}")
         index += 1
 
     logger.info("图片绘制完成")
-    return IMG_DIR
+    # return IMG_DIR
 
 # 使用 ddddocr 识别拆解后的字体图片，并保存到 imgs_copy_word 文件夹
 def ocrWords(IMG_DIR):
@@ -112,11 +107,12 @@ def readImagName(imagesPath, saveJsonName='ocr_dddd.json'):
 
 if __name__ == "__main__":
     # 分解字体并生成图片
-    # font_split_single_img()
-    IMG_DIR= font_split_single_img('./font/96fc7b50b772f52.woff2')
-    IMG_COPY_DIR= ocrWords(IMG_DIR)
-    # 识别图片中文字
-    word_map = readImagName(IMG_COPY_DIR)
+    font_path = 'font/96fc7b50b772f52.woff2'
+    font_split_single_img(font_path)
+    # IMG_DIR= font_split_single_img('96fc7b50b772f52.woff2')
+    # IMG_COPY_DIR= ocrWords(IMG_DIR)
+    # # 识别图片中文字
+    # word_map = readImagName(IMG_COPY_DIR)
 
     # 输出识别结果
-    print(word_map)
+    # print(word_map)
