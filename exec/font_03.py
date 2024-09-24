@@ -52,7 +52,6 @@ def font_split_single_img(font_path):
     logger.info("图片绘制完成")
     return os.path.join('.', 'imgs')
 
-
 # 使用 ddddocr 识别拆解后的字体图片，并保存到 imgs_copy_word 文件夹
 def ocrWords(img_dir):
     ocr = ddddocr.DdddOcr(beta=False, show_ad=False)  # 实例化 ddddocr 识别器

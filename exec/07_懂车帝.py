@@ -95,8 +95,11 @@ def main():
     with open('ocr_dddd.json', 'r', encoding='utf-8') as f:
         word_map = json.load(f)  # 直接加载 JSON 数据
     # print(word_map)
+    # 使用字典推导式去掉键中的 'gid'
+    word_map = {key.replace('gid', ''): value for key, value in word_map.items()}
+    # print(word_map)
     pg_source = get_source_page(url)
-    # print(pg_source)
+    # # print(pg_source)
     parse_pg_source(pg_source, word_map)
 
 
