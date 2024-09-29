@@ -106,12 +106,12 @@ def readImagName(imagesPath, saveJsonName='ocr_dddd.json'):
 if __name__ == "__main__":
     import time
 
-    # starttime = time.time()  # 获取开始时间
-    # img_dir = font_split_single_img(font_path='./font/96fc7b50b772f52.woff2')
-    # imagesPath = ocrWords(img_dir)
+    starttime = time.time()  # 获取开始时间
+    img_dir = font_split_single_img(font_path='./font/96fc7b50b772f52.woff2')
+    imagesPath = ocrWords(img_dir)
     word_map = readImagName('./imgs_copy_word')
-    # endtime = time.time()  # 获取结束时间
+    endtime = time.time()  # 获取结束时间
 
-    # elapsed_time = endtime - starttime  # 计算时间差
-    # logger.info(elapsed_time) # 打印耗时
+    elapsed_time = endtime - starttime  # 计算时间差
+    logger.info(elapsed_time) # 打印耗时
 

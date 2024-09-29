@@ -3,8 +3,10 @@
 import requests
 from loguru import logger
 
+# url_source= 'https://beijing.yiche.taocheche.com/all/'
 
-def get_pg_source(url):
+
+def get_pg_source(url,page):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
     }
@@ -76,7 +78,7 @@ def get_pg_source(url):
         "notCity": 0,
         "notUcarID": 0,
         "orderDirection": 0,
-        "pageIndex": 1,
+        "pageIndex": f'{page}',
         "pageSize": 20,
         "picCount": 0,
         "price": 0,
@@ -110,15 +112,34 @@ def get_pg_source(url):
     return response.json()
 
 def parse_pg_source(pg_source):
-    pass
+    data = pg_source['data']['uCarBasicInfoList']['dataList']
+    data_list = []
+    for info in data:
+        dic = {'价格': info['activityPriceText'],
+               '名称': info['carName'],
+               '上牌时间':info['carYear'],
+               '城市': info['cityName'],
+               '里程':info['drivingMileageText'],
+               '链接': info['carLink'],
+               }
+        data_list.append(dic)
+    # data_list = sorted(data_list,key=lambda x:float(x['价格'].replace('万','')))
 
+    return data_list
 
 def savedata():
     pass
 def main():
     url = 'https://proconsumer.taocheche.com/c-car-consumer/carsource/getUcarLocalList'
-    pg_source = get_pg_source(url)
-    print(pg_source)
+    total = []
+    for page in range (1,11):
+        pg_source = get_pg_source(url,page)
+        data_list = parse_pg_source(pg_source)
+        total.extend(data_list)
+
+    total = sorted(total,key=lambda x:float(x['价格'].replace('万','')))
+    for data in total:
+        print(data)
 
 
 if __name__ == "__main__":

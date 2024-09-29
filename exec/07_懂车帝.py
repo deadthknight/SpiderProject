@@ -1,7 +1,6 @@
 # ！usr/bin/env Python3.11
 # -*-coding:utf-8 -*-
 import json
-
 import requests
 from pprint import pprint
 from urllib.parse import urlparse
