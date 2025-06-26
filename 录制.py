@@ -13,6 +13,9 @@ co.incognito(True)  # 无痕模式
 co.set_argument('--start-maximized')   #窗口最大化
 # co.mute(True)    # 静音
 # co.no_imgs(True) 验证码也加载不了
+co.incognito(True)
+co.set_argument('--start-maximized')
+co.set_argument('--autoplay-policy=no-user-gesture-required')
 page = ChromiumPage(co)
 logger.info('==========================打开网页=================================')
 # 打开网站并登录
