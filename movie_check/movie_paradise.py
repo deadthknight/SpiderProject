@@ -25,6 +25,7 @@ for tr in tr_list:
     movie_url = 'https://dygod.org'+ tr.xpath('./td/a[2]/@href')[0]
     # print(name,movie_url)
     name_list.append(name)
+
     response = requests.get(url=movie_url, headers=headers)
     response.encoding = chardet.detect(response.content)['encoding']
     tree = etree.HTML(response.text)

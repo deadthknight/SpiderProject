@@ -65,12 +65,13 @@ if __name__ == '__main__':
     total = main()
     # print(len(total))
     total = sorted(total,key=lambda x:float(x["总价"].split('万')[0]))
-    with open('lianjia.csv','w',encoding="utf-8",newline=''):
-        fieldnames = ['小区名称', '详细信息', '总价', '单价']
-        writer = csv.DictWriter(open('lianjia.csv', 'w', encoding='utf-8-sig', newline=''), fieldnames=fieldnames)
-        writer.writeheader()
-        for data in total:
-            writer.writerow(data)
+    # with open('lianjia.csv','w',encoding="utf-8",newline=''):
+    #     fieldnames = ['小区名称', '详细信息', '总价', '单价']
+    #     writer = csv.DictWriter(open('lianjia.csv', 'w', encoding='utf-8-sig', newline=''), fieldnames=fieldnames)
+    #     writer.writeheader()
+    #     for data in total:
+    #         writer.writerow(data)
+    print(total)
 
 
 
